@@ -3,37 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Auto-reload every 5 min so Wanda's updates appear on the TV automatically -->
 <meta http-equiv="refresh" content="300">
 <title>Family Dashboard</title>
 <script>
 /* ==========================================================
    WANDA: EDIT ONLY THIS DATA BLOCK.
-   Regenerate these values from money_dashboard.xlsx,
-   the task list, and the events list. Do not touch anything
-   below the line that says END WANDA DATA.
+   Two money worlds: personal and easylaunch.
+   Each has income & expenses for day / week / month.
+   "net" is auto-calculated (income - expenses) — leave it out.
+   Then commit + push. The TV refreshes itself within 5 min.
+   Do not touch anything below END WANDA DATA.
    ========================================================== */
 const DATA = {
   updated: "Sun Aug 9, 2026 · 4:14 PM",
-
-  finances: {
-    weeklyBudget: 500.00,
-    spentThisWeek: 136.20,
-    dailyTarget: 71.43,          // weekly ÷ 7 (sheet formula points at wrong cell — fix there too)
-    spentToday: 136.20,
-    monthIncomePersonal: 2814.65,
-    monthIncomeBusiness: 595.96,
-    monthExpenses: 216.20,
-    debtPaidThisMonth: 0,         // update as payments post
-    debtStatus: "On plan \u00b7 next target funded"
+ 
+  personal: {
+    day:   { income: 0,      expenses: 136.20 },
+    week:  { income: 2814.65, expenses: 136.20 },
+    month: { income: 2814.65, expenses: 216.20 }
   },
-
+ 
+  easylaunch: {
+    day:   { income: 0,      expenses: 0 },
+    week:  { income: 595.96, expenses: 80.00 },
+    month: { income: 595.96, expenses: 80.00 }
+  },
+ 
+  weeklyBudget: 500.00,   // personal weekly spending target (drives the "left this week" bar)
+ 
   tasks: [
     { text: "Example — pick up groceries", done: false },
     { text: "Example — pay Wells Fargo payment", done: false },
     { text: "Example — call about Midway cleaning", done: true }
   ],
-
+ 
   events: [
     { date: "2026-08-10", time: "9:00 AM", title: "Example — Dentist" },
     { date: "2026-08-12", time: "6:30 PM", title: "Example — Dinner with family" },
@@ -50,28 +53,32 @@ const DATA = {
   .screen { position:absolute; inset:0; padding:4vh 5vw; opacity:0;
     transition:opacity 1.2s ease; pointer-events:none; display:flex; flex-direction:column; }
   .screen.active { opacity:1; pointer-events:auto; }
-  header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3.5vh; }
-  h1 { font-size:4.2vh; letter-spacing:.06em; color:#8b949e; font-weight:600; text-transform:uppercase; }
-  #clock { font-size:4.2vh; color:#8b949e; font-variant-numeric:tabular-nums; }
-  .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:2.5vh; }
-  .card { background:#161b22; border:1px solid #21262d; border-radius:18px; padding:3vh; }
-  .card .label { font-size:2.2vh; color:#8b949e; text-transform:uppercase; letter-spacing:.08em; margin-bottom:1vh; }
-  .card .big { font-size:6.5vh; font-weight:700; font-variant-numeric:tabular-nums; }
-  .good { color:#3fb950; } .warn { color:#d29922; } .bad { color:#f85149; }
-  .bar { height:2.4vh; background:#21262d; border-radius:99px; overflow:hidden; margin-top:1.6vh; }
+  header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3vh; }
+  h1 { font-size:4.2vh; letter-spacing:.06em; font-weight:600; text-transform:uppercase; }
+  h1 .tag { color:#8b949e; }
+  .clock { font-size:4.2vh; color:#8b949e; font-variant-numeric:tabular-nums; }
+ 
+  .periods { display:grid; grid-template-columns:repeat(3,1fr); gap:2.5vh; margin-bottom:2.5vh; }
+  .pcard { background:#161b22; border:1px solid #21262d; border-radius:18px; padding:2.6vh; text-align:center; }
+  .pcard .plabel { font-size:2.2vh; color:#8b949e; text-transform:uppercase; letter-spacing:.08em; margin-bottom:.8vh; }
+  .pcard .net { font-size:6vh; font-weight:700; font-variant-numeric:tabular-nums; line-height:1.05; }
+  .pcard .io { font-size:2.3vh; color:#8b949e; margin-top:1vh; }
+  .pcard .io .in { color:#3fb950; } .pcard .io .out { color:#f85149; }
+  .good { color:#3fb950; } .bad { color:#f85149; } .warn { color:#d29922; }
+ 
+  .budget { background:#161b22; border:1px solid #21262d; border-radius:18px; padding:2.8vh; margin-top:auto; }
+  .budget .blabel { font-size:2.2vh; color:#8b949e; text-transform:uppercase; letter-spacing:.08em; }
+  .budget .bnum { font-size:4vh; font-weight:700; font-variant-numeric:tabular-nums; margin-top:.6vh; }
+  .bar { height:2.6vh; background:#21262d; border-radius:99px; overflow:hidden; margin-top:1.4vh; }
   .bar > div { height:100%; border-radius:99px; }
-  .sub { font-size:2.3vh; color:#8b949e; margin-top:1.2vh; }
-  table { width:100%; border-collapse:collapse; margin-top:1vh; }
-  th { text-align:left; font-size:2vh; color:#8b949e; text-transform:uppercase;
-    letter-spacing:.06em; padding:1vh 0; border-bottom:1px solid #21262d; }
-  td { font-size:2.8vh; padding:1.4vh 0; border-bottom:1px solid #1c2128; }
-  td.num { text-align:right; font-variant-numeric:tabular-nums; }
-  .tasklist { font-size:4vh; line-height:2.1; }
+ 
+  .tasklist { font-size:4.2vh; line-height:2.05; }
   .tasklist li { list-style:none; display:flex; align-items:center; gap:1.5vw; }
-  .box { width:3.4vh; height:3.4vh; border:.35vh solid #30363d; border-radius:.9vh; flex:0 0 auto;
+  .box { width:3.6vh; height:3.6vh; border:.35vh solid #30363d; border-radius:.9vh; flex:0 0 auto;
     display:flex; align-items:center; justify-content:center; font-size:2.6vh; }
   .done { color:#484f58; text-decoration:line-through; }
   .done .box { border-color:#238636; color:#3fb950; }
+ 
   .cal { display:grid; grid-template-columns:1.15fr .85fr; gap:3vw; flex:1; min-height:0; }
   .grid { display:grid; grid-template-columns:repeat(7,1fr); gap:.6vh; align-content:start; }
   .grid .dow { font-size:1.9vh; color:#8b949e; text-align:center; text-transform:uppercase; padding:.6vh 0; }
@@ -83,6 +90,7 @@ const DATA = {
     padding:2vh; margin-bottom:1.6vh; }
   .events .when { font-size:2.1vh; color:#d29922; text-transform:uppercase; letter-spacing:.06em; }
   .events .what { font-size:3.2vh; margin-top:.4vh; }
+ 
   .dots { position:absolute; bottom:2.5vh; left:0; right:0; display:flex; justify-content:center; gap:1.4vh; }
   .dots span { width:1.4vh; height:1.4vh; border-radius:50%; background:#30363d; transition:background .4s; }
   .dots span.on { background:#e6edf3; }
@@ -90,116 +98,116 @@ const DATA = {
 </style>
 </head>
 <body>
-
-<!-- SCREEN 1: FINANCES -->
+ 
+<!-- SCREEN 1: PERSONAL -->
 <section class="screen" id="s0">
-  <header><h1>Money</h1><div class="clock">​</div></header>
-  <div class="cards">
-    <div class="card">
-      <div class="label">This week</div>
-      <div class="big" id="weekRemain"></div>
-      <div class="bar"><div id="weekBar"></div></div>
-      <div class="sub" id="weekSub"></div>
-    </div>
-    <div class="card">
-      <div class="label">Today's pace</div>
-      <div class="big" id="todayNum"></div>
-      <div class="sub" id="todaySub"></div>
-    </div>
-    <div class="card">
-      <div class="label">This month · net</div>
-      <div class="big" id="monthNet"></div>
-      <div class="sub" id="monthSub"></div>
-    </div>
-  </div>
-  <div class="card" style="margin-top:2.5vh;">
-    <div class="label">Debt paydown</div>
-    <div class="big good" id="debtLine"></div>
-    <div class="sub" id="debtSub"></div>
+  <header><h1>Personal <span class="tag">· Money</span></h1><div class="clock"></div></header>
+  <div class="periods" id="pPersonal"></div>
+  <div class="budget">
+    <div class="blabel">This week's budget</div>
+    <div class="bnum" id="budgetNum"></div>
+    <div class="bar"><div id="budgetBar"></div></div>
   </div>
 </section>
-
-<!-- SCREEN 2: TASKS -->
+ 
+<!-- SCREEN 2: EASY LAUNCH -->
 <section class="screen" id="s1">
-  <header><h1>Today's Tasks</h1><div class="clock">​</div></header>
+  <header><h1>Easy Launch <span class="tag">· Services</span></h1><div class="clock"></div></header>
+  <div class="periods" id="pEasy"></div>
+  <div class="budget">
+    <div class="blabel">Month net · business</div>
+    <div class="bnum" id="easyNet"></div>
+  </div>
+</section>
+ 
+<!-- SCREEN 3: TASKS -->
+<section class="screen" id="s2">
+  <header><h1>Today's Tasks</h1><div class="clock"></div></header>
   <ul class="tasklist" id="taskRows"></ul>
 </section>
-
-<!-- SCREEN 3: CALENDAR -->
-<section class="screen" id="s2">
-  <header><h1 id="calTitle">Calendar</h1><div class="clock">​</div></header>
+ 
+<!-- SCREEN 4: CALENDAR -->
+<section class="screen" id="s3">
+  <header><h1 id="calTitle">Calendar</h1><div class="clock"></div></header>
   <div class="cal">
     <div><div class="grid" id="calGrid"></div></div>
     <div><ul class="events" id="eventRows"></ul></div>
   </div>
 </section>
-
-<div class="dots"><span></span><span></span><span></span></div>
+ 
+<div class="dots"><span></span><span></span><span></span><span></span></div>
 <div class="updated">Updated <span id="upd"></span></div>
-
+ 
 <script>
 const $ = s => document.querySelector(s);
-const money = n => "$" + n.toLocaleString("en-US", {maximumFractionDigits:0});
-const F = DATA.finances;
-
-/* Finances */
-const remain = F.weeklyBudget - F.spentThisWeek;
-$("#weekRemain").textContent = money(remain) + " left";
-$("#weekRemain").className = "big " + (remain > F.weeklyBudget*0.3 ? "good" : remain > 0 ? "warn" : "bad");
-const pct = Math.min(100, F.spentThisWeek / F.weeklyBudget * 100);
-$("#weekBar").style.width = pct + "%";
-$("#weekBar").style.background = pct < 70 ? "#3fb950" : pct < 100 ? "#d29922" : "#f85149";
-$("#weekSub").textContent = money(F.spentThisWeek) + " of " + money(F.weeklyBudget) + " spent";
-const over = F.spentToday > F.dailyTarget;
-$("#todayNum").textContent = money(F.spentToday);
-$("#todayNum").className = "big " + (over ? "warn" : "good");
-$("#todaySub").textContent = "Target " + money(F.dailyTarget) + "/day · " + (over ? "over today" : "on track");
-const inc = F.monthIncomePersonal + F.monthIncomeBusiness;
-const net = inc - F.monthExpenses;
-$("#monthNet").textContent = money(net);
-$("#monthNet").className = "big " + (net >= 0 ? "good" : "bad");
-$("#monthSub").textContent = "income minus expenses";
-$("#debtLine").textContent = money(F.debtPaidThisMonth) + " paid this month";
-$("#debtSub").textContent = F.debtStatus;
-
+const money = n => (n<0?"-$":"$") + Math.abs(n).toLocaleString("en-US",{maximumFractionDigits:0});
+ 
+function periodCards(world){
+  return ["day","week","month"].map(p => {
+    const d = world[p], net = d.income - d.expenses;
+    const label = p==="day"?"Today":p==="week"?"This Week":"This Month";
+    return `<div class="pcard">
+      <div class="plabel">${label}</div>
+      <div class="net ${net>=0?"good":"bad"}">${money(net)}</div>
+      <div class="io"><span class="in">+${money(d.income)}</span> &nbsp;·&nbsp; <span class="out">${money(d.expenses)}</span></div>
+    </div>`;
+  }).join("");
+}
+ 
+$("#pPersonal").innerHTML = periodCards(DATA.personal);
+$("#pEasy").innerHTML = periodCards(DATA.easylaunch);
+ 
+/* Personal weekly budget bar */
+const spent = DATA.personal.week.expenses, budget = DATA.weeklyBudget;
+const remain = budget - spent, pct = Math.min(100, spent/budget*100);
+$("#budgetNum").textContent = money(remain) + " left of " + money(budget);
+$("#budgetNum").className = "bnum " + (remain>budget*0.3?"good":remain>0?"warn":"bad");
+$("#budgetBar").style.width = pct + "%";
+$("#budgetBar").style.background = pct<70?"#3fb950":pct<100?"#d29922":"#f85149";
+ 
+/* Easy Launch month net */
+const eNet = DATA.easylaunch.month.income - DATA.easylaunch.month.expenses;
+$("#easyNet").textContent = money(eNet);
+$("#easyNet").className = "bnum " + (eNet>=0?"good":"bad");
+ 
 /* Tasks */
 $("#taskRows").innerHTML = DATA.tasks.map(t =>
-  `<li class="${t.done ? "done":""}"><span class="box">${t.done ? "✓":""}</span>${t.text}</li>`).join("")
+  `<li class="${t.done?"done":""}"><span class="box">${t.done?"✓":""}</span>${t.text}</li>`).join("")
   || "<li>No tasks yet — tell Wanda!</li>";
-
+ 
 /* Calendar */
 const now = new Date();
-$("#calTitle").textContent = now.toLocaleDateString("en-US",{month:"long", year:"numeric"});
-const y = now.getFullYear(), m = now.getMonth();
-const firstDow = new Date(y,m,1).getDay(), daysIn = new Date(y,m+1,0).getDate();
-const evDays = new Set(DATA.events.map(e => e.date));
-let g = ["S","M","T","W","T","F","S"].map(d=>`<div class="dow">${d}</div>`).join("");
-for (let i=0;i<firstDow;i++) g += `<div></div>`;
-for (let d=1;d<=daysIn;d++){
-  const iso = `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-  const cls = ["day", d===now.getDate()?"today":"", evDays.has(iso)?"hasEvent":""].join(" ");
-  g += `<div class="${cls}">${d}</div>`;
+$("#calTitle").textContent = now.toLocaleDateString("en-US",{month:"long",year:"numeric"});
+const y=now.getFullYear(), m=now.getMonth();
+const firstDow=new Date(y,m,1).getDay(), daysIn=new Date(y,m+1,0).getDate();
+const evDays=new Set(DATA.events.map(e=>e.date));
+let g=["S","M","T","W","T","F","S"].map(d=>`<div class="dow">${d}</div>`).join("");
+for(let i=0;i<firstDow;i++) g+=`<div></div>`;
+for(let d=1;d<=daysIn;d++){
+  const iso=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+  const cls=["day",d===now.getDate()?"today":"",evDays.has(iso)?"hasEvent":""].join(" ");
+  g+=`<div class="${cls}">${d}</div>`;
 }
-$("#calGrid").innerHTML = g;
-$("#eventRows").innerHTML = DATA.events.map(e => {
-  const dt = new Date(e.date+"T00:00");
-  const when = dt.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}) + (e.time ? " · "+e.time : "");
+$("#calGrid").innerHTML=g;
+$("#eventRows").innerHTML=DATA.events.map(e=>{
+  const dt=new Date(e.date+"T00:00");
+  const when=dt.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})+(e.time?" · "+e.time:"");
   return `<li><div class="when">${when}</div><div class="what">${e.title}</div></li>`;
 }).join("") || "<li><div class='what'>No upcoming events</div></li>";
-
+ 
 $("#upd").textContent = DATA.updated;
-
-/* Clock + screen cycling */
-function tick(){ const t = new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
-  document.querySelectorAll(".clock").forEach(c => c.textContent = t); }
-tick(); setInterval(tick, 15000);
-
-const screens = [ $("#s0"), $("#s1"), $("#s2") ], dots = document.querySelectorAll(".dots span");
-let cur = 0;
-function show(i){ screens.forEach((s,j)=>s.classList.toggle("active", j===i));
-  dots.forEach((d,j)=>d.classList.toggle("on", j===i)); cur = i; }
+ 
+/* Clock + cycling */
+function tick(){ const t=new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
+  document.querySelectorAll(".clock").forEach(c=>c.textContent=t); }
+tick(); setInterval(tick,15000);
+ 
+const screens=[$("#s0"),$("#s1"),$("#s2"),$("#s3")], dots=document.querySelectorAll(".dots span");
+let cur=0;
+function show(i){ screens.forEach((s,j)=>s.classList.toggle("active",j===i));
+  dots.forEach((d,j)=>d.classList.toggle("on",j===i)); cur=i; }
 show(0);
-setInterval(()=>show((cur+1)%3), 20000);   /* 20s per screen */
+setInterval(()=>show((cur+1)%screens.length),18000);
 </script>
 </body>
 </html>
