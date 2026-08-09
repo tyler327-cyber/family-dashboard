@@ -116,9 +116,10 @@ const DATA = {
   .events .when { font-size:2.1vh; color:#d29922; text-transform:uppercase; letter-spacing:.06em; }
   .events .what { font-size:3.2vh; margin-top:.4vh; }
  
-  .dots { position:absolute; bottom:2.5vh; left:0; right:0; display:flex; justify-content:center; gap:1.4vh; }
-  .dots span { width:1.4vh; height:1.4vh; border-radius:50%; background:#30363d; transition:background .4s; }
-  .dots span.on { background:#e6edf3; }
+  .dots { position:absolute; bottom:2.5vh; left:0; right:0; display:flex; justify-content:center; gap:1.4vh; z-index:10; }
+  .dots span { width:1.4vh; height:1.4vh; border-radius:50%; background:#30363d; transition:background .4s;
+    cursor:pointer; padding:1.2vh; background-clip:content-box; }
+  .dots span.on { background:#e6edf3; background-clip:content-box; }
   .updated { position:absolute; bottom:2.3vh; right:3vw; font-size:1.8vh; color:#484f58; }
 </style>
 </head>
@@ -241,10 +242,45 @@ tick(); setInterval(tick,15000);
  
 const screens=[$("#s0"),$("#s1"),$("#s2"),$("#s3")], dots=document.querySelectorAll(".dots span");
 let cur=0;
-function show(i){ screens.forEach((s,j)=>s.classList.toggle("active",j===i));
-  dots.forEach((d,j)=>d.classList.toggle("on",j===i)); cur=i; }
+function show(i){ cur=(i+screens.length)%screens.length;
+  screens.forEach((s,j)=>s.classList.toggle("active",j===cur));
+  dots.forEach((d,j)=>d.classList.toggle("on",j===cur)); }
 show(0);
-setInterval(()=>show((cur+1)%screens.length),18000);
+ 
+/* Auto-cycle, pausable */
+const CYCLE_MS = 18000, IDLE_MS = 10*60*1000;
+let autoTimer=null, idleTimer=null;
+function startAuto(){ if(autoTimer) return;
+  autoTimer=setInterval(()=>show(cur+1), CYCLE_MS); }
+function stopAuto(){ clearInterval(autoTimer); autoTimer=null; }
+function userActed(goto){
+  stopAuto();
+  if(typeof goto==="number") show(goto);
+  clearTimeout(idleTimer);
+  idleTimer=setTimeout(startAuto, IDLE_MS);   /* resume cycling after 10 min idle */
+}
+startAuto();
+ 
+/* Dot taps */
+dots.forEach((d,i)=> d.addEventListener("click",()=>userActed(i)));
+ 
+/* Tap left/right half of screen to go prev/next */
+document.body.addEventListener("click", e=>{
+  if(e.target.closest(".dots")) return;           /* dots handled above */
+  const goNext = e.clientX > window.innerWidth/2;
+  userActed(cur + (goNext?1:-1));
+});
+ 
+/* Swipe (touch) */
+let x0=null;
+document.body.addEventListener("touchstart", e=>{ x0=e.changedTouches[0].clientX; }, {passive:true});
+document.body.addEventListener("touchend", e=>{
+  if(x0===null) return;
+  const dx=e.changedTouches[0].clientX - x0;
+  if(Math.abs(dx)>50) userActed(cur + (dx<0?1:-1));   /* swipe left = next */
+  x0=null;
+}, {passive:true});
 </script>
 </body>
 </html>
+ 
