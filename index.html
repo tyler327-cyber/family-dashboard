@@ -15,7 +15,7 @@
    Do not touch anything below END WANDA DATA.
    ========================================================== */
 const DATA = {
-  updated: "Sun Aug 9, 2026 · 1:11 PM",
+  updated: "Sun Aug 9, 2026 · 4:14 PM",
 
   // Wanda writes this fresh each morning — tie it to the week's numbers + the goals below
   wandaMessage: "Every dollar you keep this week is a brick in the house you're building. You're closer than yesterday — keep going.",
@@ -28,30 +28,51 @@ const DATA = {
   ],
 
   personal: {
-    day:   { income: 0, expenses: 0 },
-    week:  { income: 2814.65, expenses: 84.2 },
-    month: { income: 2814.65, expenses: 84.2 }
+    day:   { income: 0,      expenses: 136.20 },
+    week:  { income: 2814.65, expenses: 136.20 },
+    month: { income: 2814.65, expenses: 216.20 }
   },
 
   easylaunch: {
-    day:   { income: 0, expenses: 0 },
-    week:  { income: 595.96, expenses: 0 },
-    month: { income: 595.96, expenses: 0 }
+    day:   { income: 0,      expenses: 0 },
+    week:  { income: 595.96, expenses: 80.00 },
+    month: { income: 595.96, expenses: 80.00 }
   },
 
-  personalBudget: {       // personal spending targets — drive the bars on the Personal screen
-    day:   71.43,
-    week:  500.00,
-    month: 2000.00
+  // THREE BUCKETS — Wanda fills spent from the sheet; targets are set below.
+  // Variable categories each show spent vs weekly/monthly budget.
+  buckets: {
+    fixed: {           // must-pay, monthly. Wanda sums the recurring bills.
+      spent: 0,
+      monthly: 3600,   // approx total of rent+utilities+insurance+phone+loan (Wanda refines)
+      items: ["Rent", "Electric", "Internet", "Phone", "Auto Insurance (Progressive)", "Student Loan"]
+    },
+    variable: {        // can-control. each: spent this period vs budget
+      dining:      { spentWeek: 0, budgetWeek: 175 },
+      groceries:   { spentWeek: 0, budgetWeek: 150 },
+      shopping:    { spentMonth: 0, budgetMonth: 500 },
+      gas:         { spentMonth: 0, typicalMonth: 157 },   // varies — running total, no cap
+      other:       { spentMonth: 0, budgetMonth: 150 }     // entertainment + misc
+    }
+  },
+
+  // Savings / investments — Tyler updates these manually
+  savings: {
+    robinhood: 0,      // "I'll tell Wanda the number I see"
+    sofi:      0,      // savings, currently 0
+    houseFund: 0,      // toward the down payment
+    note: "Update these by telling Wanda the latest balances"
   },
 
   // Last few transactions per world (newest first) — Wanda keeps ~5 each, fills the lower screen
   recentPersonal: [
-    { date: "Aug 6", account: "Boeing", amount: 2814.65, note: "Paycheck" },
-    { date: "Aug 3", account: "Chase Sapphire 1234", amount: -84.2, note: "Groceries" }
+    { date: "Aug 9", account: "Chase Sapphire 1234", amount: -84.20, note: "Groceries" },
+    { date: "Aug 9", account: "Wells Fargo 5678",    amount: -52.00, note: "Gas" },
+    { date: "Aug 6", account: "Boeing",              amount: 2814.65, note: "Paycheck" }
   ],
   recentEasy: [
-    { date: "Aug 5", account: "Airbnb payout", amount: 595.96, note: "STR payout" }
+    { date: "Aug 5", account: "Airbnb payout", amount: 595.96, note: "STR payout" },
+    { date: "Aug 8", account: "Amex Biz 71004", amount: -80.00, note: "Cleaning" }
   ],
 
   tasks: [
@@ -83,6 +104,18 @@ const DATA = {
     transition:opacity 1.2s ease; pointer-events:none; display:flex; flex-direction:column; }
   .screen.active { opacity:1; pointer-events:auto; }
   header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3vh; }
+  .buckets { display:flex; flex-direction:column; gap:2vh; flex:1; min-height:0; }
+  .bkt { background:#2a0d10; border:1px solid #4a1a1f; border-radius:16px; padding:2.2vh 2.8vh; }
+  .bkt .btop { display:flex; justify-content:space-between; align-items:baseline; }
+  .bkt .bname { font-size:2.8vh; font-weight:600; }
+  .bkt .bname .bsub { font-size:2vh; color:#d99a9a; font-weight:400; margin-left:1vw; }
+  .bkt .bval { font-size:2.8vh; font-variant-numeric:tabular-nums; font-weight:600; }
+  .bkt .bar { height:2vh; margin-top:1.2vh; }
+  .bkt.head { background:transparent; border:none; padding:.5vh 0; }
+  .bkt.head .bname { font-size:2.3vh; color:#d99a9a; text-transform:uppercase; letter-spacing:.08em; }
+  .recent-sm { margin-top:1.5vh; padding:1.6vh 2.4vh; flex:0 0 auto; }
+  .recent-sm li { font-size:2.1vh; padding:.7vh 0; }
+
   .summary { display:flex; flex-direction:column; gap:2.5vh; flex:1; min-height:0; }
   .wcard { display:flex; align-items:center; gap:3vw; background:#2a0d10; border:1px solid #4a1a1f;
     border-radius:22px; padding:3vh 3.5vh; box-shadow:0 0 40px rgba(224,62,82,.15) inset; }
@@ -171,8 +204,8 @@ const DATA = {
 <!-- SCREEN 1: PERSONAL -->
 <section class="screen" id="s1">
   <header><h1>Personal <span class="tag">· Money</span></h1><div class="clock"></div></header>
-  <div class="periods" id="pPersonal"></div>
-  <div class="recent"><div class="rlabel">Recent</div><ul id="recentPersonalRows"></ul></div>
+  <div class="buckets" id="bucketRows"></div>
+  <div class="recent recent-sm"><ul id="recentPersonalRows"></ul></div>
 </section>
 
 <!-- SCREEN 2: EASY LAUNCH -->
@@ -183,7 +216,14 @@ const DATA = {
     <div class="blabel">Month net · business</div>
     <div class="bnum" id="easyNet"></div>
   </div>
-  <div class="recent"><div class="rlabel">Recent</div><ul id="recentEasyRows"></ul></div>
+  <div class="recent recent-sm"><ul id="recentEasyRows"></ul></div>
+</section>
+
+<!-- SCREEN: SAVINGS / INVESTMENTS -->
+<section class="screen" id="sSave">
+  <header><h1>Savings <span class="tag">· Toward the goal</span></h1><div class="clock"></div></header>
+  <div class="periods" id="savingsRows"></div>
+  <div class="headline" id="savingsNote"></div>
 </section>
 
 <!-- SCREEN 3: TASKS -->
@@ -201,7 +241,7 @@ const DATA = {
   </div>
 </section>
 
-<div class="dots"><span></span><span></span><span></span><span></span><span></span></div>
+<div class="dots"><span></span><span></span><span></span><span></span><span></span><span></span></div>
 <div class="updated">Updated <span id="upd"></span></div>
 
 <script>
@@ -228,7 +268,31 @@ function periodCards(world, budgets){
   }).join("");
 }
 
-$("#pPersonal").innerHTML = periodCards(DATA.personal, DATA.personalBudget);
+/* Personal screen — three buckets */
+function bucketBar(spent, target, opts){
+  opts = opts || {};
+  const pct = target ? Math.min(100, spent/target*100) : 0;
+  const col = opts.noCap ? "#d99a9a" : pct<70?"#3fb950":pct<100?"#d29922":"#f85149";
+  const right = opts.noCap ? money(spent) + " · ~" + money(target) + "/mo typical"
+                           : money(spent) + " of " + money(target);
+  return `<div class="bkt">
+    <div class="btop"><div class="bname">${opts.name}<span class="bsub">${opts.per||""}</span></div>
+      <div class="bval" style="color:${opts.noCap?'#fbe9e9':(target-spent>=0?'#3fb950':'#f85149')}">${right}</div></div>
+    <div class="bar"><div style="width:${pct}%;background:${col};height:100%;border-radius:99px"></div></div>
+  </div>`;
+}
+const V = DATA.buckets.variable, Fx = DATA.buckets.fixed;
+$("#bucketRows").innerHTML =
+  `<div class="bkt head"><div class="bname">Must-pay (fixed) · monthly</div></div>` +
+  `<div class="bkt"><div class="btop"><div class="bname">Fixed bills</div>
+     <div class="bval">${money(Fx.spent)} of ${money(Fx.monthly)}</div></div>
+     <div class="bar"><div style="width:${Math.min(100,Fx.spent/Fx.monthly*100)}%;background:#8b6a3a;height:100%;border-radius:99px"></div></div></div>` +
+  `<div class="bkt head"><div class="bname">Can-control (variable)</div></div>` +
+  bucketBar(V.dining.spentWeek, V.dining.budgetWeek, {name:"Dining / Takeout", per:"this week"}) +
+  bucketBar(V.groceries.spentWeek, V.groceries.budgetWeek, {name:"Groceries", per:"this week"}) +
+  bucketBar(V.shopping.spentMonth, V.shopping.budgetMonth, {name:"Shopping", per:"this month"}) +
+  bucketBar(V.gas.spentMonth, V.gas.typicalMonth, {name:"Gas", per:"this month", noCap:true}) +
+  bucketBar(V.other.spentMonth, V.other.budgetMonth, {name:"Other", per:"this month"});
 $("#pEasy").innerHTML = periodCards(DATA.easylaunch, null);
 
 /* Easy Launch month net */
@@ -285,15 +349,23 @@ $("#wandaMsg").textContent = DATA.wandaMessage || "";
 $("#goalRows").innerHTML = (DATA.goals||[]).map(g =>
   `<div class="goal"><div class="gemoji">${g.emoji}</div><div class="glabel">${g.label}</div><div class="gnote">${g.note}</div></div>`).join("");
 const wkNet = DATA.personal.week.income - DATA.personal.week.expenses;
-const wkBudLeft = DATA.personalBudget.week - DATA.personal.week.expenses;
-$("#headline").innerHTML = `This week: <b>${money(wkBudLeft)}</b> left in budget · <b>${money(wkNet)}</b> net`;
+const dLeft = DATA.buckets.variable.dining.budgetWeek - DATA.buckets.variable.dining.spentWeek;
+$("#headline").innerHTML = `Dining budget left this week: <b>${money(dLeft)}</b>`;
+
+/* Savings screen */
+const S = DATA.savings;
+$("#savingsRows").innerHTML =
+  `<div class="pcard"><div class="plabel">House Fund</div><div class="net good">${money(S.houseFund)}</div><div class="io">toward the down payment</div></div>`+
+  `<div class="pcard"><div class="plabel">Robinhood</div><div class="net">${money(S.robinhood)}</div><div class="io">investments</div></div>`+
+  `<div class="pcard"><div class="plabel">SoFi Savings</div><div class="net">${money(S.sofi)}</div><div class="io">emergency fund</div></div>`;
+$("#savingsNote").innerHTML = "Every transfer is a brick in the house 🏡";
 
 /* Clock + cycling */
 function tick(){ const t=new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
   document.querySelectorAll(".clock").forEach(c=>c.textContent=t); }
 tick(); setInterval(tick,15000);
 
-const screens=[$("#s0"),$("#s1"),$("#s2"),$("#s3"),$("#s4")], dots=document.querySelectorAll(".dots span");
+const screens=[$("#s0"),$("#s1"),$("#s2"),$("#sSave"),$("#s3"),$("#s4")], dots=document.querySelectorAll(".dots span");
 let cur=0;
 function show(i){ cur=(i+screens.length)%screens.length;
   screens.forEach((s,j)=>s.classList.toggle("active",j===cur));
