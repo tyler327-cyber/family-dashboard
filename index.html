@@ -14,7 +14,7 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Sun Aug 9, 2026 · 6:04 PM",
+  updated: "Sun Aug 9, 2026 · 5:19 PM",
 
   wandaMessage: "Every dollar you keep this week is a brick in the house you're building.",
 
@@ -29,32 +29,30 @@ const DATA = {
     income: {
       week:  0,
       month: 0,
-      items: [
-        { label: "Boeing (W2)", monthly: 0 },
-        { label: "Other", monthly: 0 }
-      ]
+      items: [ { label: "Boeing (W2)", monthly: 0 }, { label: "Other", monthly: 0 } ]
     },
-    expenses: { week: 2908.18, month: 3106.97 },
-    cashflow: { weekIn: 0, weekOut: 2335, monthIn: 0, monthOut: 2335 }
+    expenses: { week: 0, month: 0 },   // total spending (fixed+variable) — Wanda fills
+    cashflow: { weekIn: 0, weekOut: 0, monthIn: 0, monthOut: 0 }
   },
 
   business: {
-    easylaunch: { name: "Easy Launch Services", month: { income: 1529.98, expenses: 1068.06 } },
-    azramar:    { name: "AZ Ramar",             month: { income: 0, expenses: 907.29 } }
+    easylaunch: { name: "Easy Launch Services", month: { income: 0, expenses: 0 } },
+    azramar:    { name: "AZ Ramar",             month: { income: 0, expenses: 0 } }
   },
 
   buckets: {
     fixed: {
-      monthly: 3600,
-      spent: 2335,
+      weekly: 900, monthly: 3600,
+      spentWeek: 0, spentMonth: 0,
       items: ["Rent", "Electric", "Internet", "Phone", "Insurance", "Student Loan"]
     },
+    // each category: spent + budget for BOTH week and month. gas has no cap (typical only).
     variable: {
-      dining:    { spentWeek: 170.75, budgetWeek: 175 },
-      groceries: { spentWeek: 208.8, budgetWeek: 150 },
-      shopping:  { spentMonth: 52.48, budgetMonth: 500 },
-      gas:       { spentMonth: 141.15, typicalMonth: 157 },
-      other:     { spentMonth: 58.37, budgetMonth: 150 }
+      dining:    { spentWeek: 0, budgetWeek: 175, spentMonth: 0, budgetMonth: 758 },
+      groceries: { spentWeek: 0, budgetWeek: 150, spentMonth: 0, budgetMonth: 650 },
+      shopping:  { spentWeek: 0, budgetWeek: 115, spentMonth: 0, budgetMonth: 500 },
+      gas:       { spentWeek: 0, budgetWeek: 0,   spentMonth: 0, budgetMonth: 0, noCap: true },
+      other:     { spentWeek: 0, budgetWeek: 35,  spentMonth: 0, budgetMonth: 150 }
     }
   },
 
@@ -63,7 +61,7 @@ const DATA = {
     houseFund: 0,
     sofi:      0,
     robinhood: 18763.48,
-    ira:       29420.05,
+    ira:       29420.05,   // Self-Directed IRA
     note: ""
   },
 
@@ -114,20 +112,30 @@ const DATA = {
   .lbl { font-size:2vh; color:#c98b8b; text-transform:uppercase; letter-spacing:.08em; }
 
   /* SUMMARY screen */
-  .summary { display:flex; flex-direction:column; gap:2vh; flex:1; min-height:0; }
+  .summary { display:flex; flex-direction:column; gap:2.5vh; flex:1; min-height:0; justify-content:flex-start; }
   .wcard { display:flex; align-items:center; gap:2.5vw; background:#2a0d10; border:1px solid #4a1a1f;
     border-radius:20px; padding:2.2vh 3vh; box-shadow:0 0 40px rgba(224,62,82,.15) inset; flex:0 0 auto; }
-  .wportrait { height:18vh; border-radius:16px; flex:0 0 auto; box-shadow:0 0 30px rgba(224,62,82,.35); }
+  .wportrait { height:16vh; border-radius:16px; flex:0 0 auto; box-shadow:0 0 30px rgba(224,62,82,.35); }
   .wmsg { font-size:3.4vh; line-height:1.3; font-weight:500; }
-  .sumgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:2.2vh; flex:1; min-height:0; }
-  .sumtile { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2.8vh; display:flex; flex-direction:column; justify-content:center; }
-  .sumtile .big { font-size:5.5vh; font-weight:700; font-variant-numeric:tabular-nums; line-height:1; margin:.6vh 0; }
+  .sumgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:2.2vw; flex:0 0 auto; }
+  .sumtile { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:3vh; text-align:center;
+    display:flex; flex-direction:column; justify-content:center; aspect-ratio:1.9; }
+  .sumtile .lbl { font-size:2vh; }
+  .sumtile .big { font-size:5.5vh; font-weight:700; font-variant-numeric:tabular-nums; line-height:1; margin:1vh 0 .6vh; }
   .sumtile .sub { font-size:2vh; color:#c98b8b; }
-  .goalrow { display:flex; gap:2vw; flex:0 0 auto; padding-bottom:1vh; }
-  .goalrow .g { flex:1; text-align:center; }
-  .goalrow .ge { font-size:3.4vh; } .goalrow .gl { font-size:2.2vh; color:#ff7a8a; font-weight:600; }
+  .goalrow { display:flex; gap:2vw; flex:0 0 auto; }
+  .goalrow .g { flex:1; text-align:center; background:#2a0d10; border:1px solid #4a1a1f; border-radius:16px; padding:1.8vh; }
+  .goalrow .ge { font-size:3vh; } .goalrow .gl { font-size:2.2vh; color:#ff7a8a; font-weight:600; margin-top:.4vh; }
+  .goalrow .gn { font-size:1.9vh; color:#c98b8b; margin-top:.3vh; }
 
   /* PERSONAL — three columns */
+  /* PERSONAL — 2 blocks top, wide expenses bottom */
+  .ptop { display:grid; grid-template-columns:1fr 1fr; gap:2.2vw; margin-bottom:2.2vh; }
+  .ptop .col { min-height:0; }
+  .pexp { display:grid; grid-template-columns:1fr 1fr; gap:2.2vw; flex:1; min-height:0;
+    background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2.6vh; }
+  .pexphalf { display:flex; flex-direction:column; }
+  .pexphalf:first-child { border-right:1px solid #4a1a1f; padding-right:2.2vw; }
   .cols3 { display:grid; grid-template-columns:1fr 1.3fr 1fr; gap:2.2vw; flex:1; min-height:0; }
   .col { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2.6vh; display:flex; flex-direction:column; }
   .col .ch { font-size:2.2vh; color:#c98b8b; text-transform:uppercase; letter-spacing:.08em; margin-bottom:1.6vh; }
@@ -215,10 +223,13 @@ const DATA = {
 <!-- 1 PERSONAL -->
 <section class="screen" id="s1">
   <header><h1>Personal <span class="tag">· Money</span></h1><div class="clock"></div></header>
-  <div class="cols3">
+  <div class="ptop">
     <div class="col" id="colIncome"></div>
-    <div class="col" id="colExpenses"></div>
     <div class="col" id="colCashflow"></div>
+  </div>
+  <div class="pexp">
+    <div class="pexphalf"><div class="ch">Expenses · This Week</div><div id="expWeek"></div></div>
+    <div class="pexphalf"><div class="ch">Expenses · This Month</div><div id="expMonth"></div></div>
   </div>
 </section>
 
@@ -246,7 +257,10 @@ const DATA = {
   <header><h1 id="calTitle">Calendar</h1><div class="clock"></div></header>
   <div class="cal">
     <div><div class="grid" id="calGrid"></div></div>
-    <div><ul class="events" id="eventRows"></ul></div>
+    <div>
+      <ul class="events" id="eventRows"></ul>
+      <div class="caltasks"><div class="lbl" style="margin:1.5vh 0 1vh">This week's tasks</div><ul id="calTaskRows"></ul></div>
+    </div>
   </div>
 </section>
 
@@ -273,52 +287,46 @@ $("#sumGrid").innerHTML =
   tile("Dining left · week", money(dLeft), dLeft>=0?"good":"bad", "of "+money(V.dining.budgetWeek)) +
   tile("Savings + invest", money(savingsTotal), "", "toward the goal");
 function tile(lbl,big,cls,sub){ return `<div class="sumtile"><div class="lbl">${lbl}</div><div class="big ${cls}">${big}</div><div class="sub">${sub}</div></div>`; }
-$("#goalRow").innerHTML = DATA.goals.map(g=>`<div class="g"><div class="ge">${g.emoji}</div><div class="gl">${g.label}</div></div>`).join("");
+$("#goalRow").innerHTML = DATA.goals.map(g=>`<div class="g"><div class="ge">${g.emoji}</div><div class="gl">${g.label}</div><div class="gn">${g.note||""}</div></div>`).join("");
 
-/* ---- PERSONAL: 3 columns, each week + month ---- */
-function periodLine(label, val, cls){ return `<div class="line"><span class="lname">${label}</span><span class="lamt ${cls||''}">${(cls==='good'&&val>=0?'+':'')}${money(val)}</span></div>`; }
-
-// Column 1: Income (week + month)
+/* ---- PERSONAL ---- */
+// Top-left: Income
 $("#colIncome").innerHTML =
   `<div class="ch">Income</div>` +
   `<div class="hero good">${money(P.income.month)}</div><div class="herosub">this month</div>` +
-  periodLine("This week", P.income.week, "good") +
-  periodLine("This month", P.income.month, "good") +
-  `<div class="mini"></div>` +
+  `<div class="line"><span class="lname">This week</span><span class="lamt good">${money(P.income.week)}</span></div>` +
   P.income.items.map(i=>`<div class="line"><span class="lname" style="font-size:2.1vh;color:#c98b8b">${i.label}</span><span class="lamt good" style="font-size:2.1vh">${money(i.monthly)}</span></div>`).join("");
 
-// Column 2: Expenses (week + month totals, then category bars)
-$("#colExpenses").innerHTML =
-  `<div class="ch">Expenses</div>` +
-  `<div class="hero bad">${money(P.expenses.month)}</div><div class="herosub">this month</div>` +
-  periodLine("This week", P.expenses.week) +
-  periodLine("This month", P.expenses.month) +
-  `<div class="mini" style="margin-top:1.6vh"><div class="minirow"><span class="mininame" style="color:#c98b8b">Fixed</span><span class="miniamt">${money(Fx.spent)} / ${money(Fx.monthly)}</span></div>${bar(Fx.spent,Fx.monthly,"#8b6a3a")}</div>` +
-  miniCat("Dining", V.dining.spentWeek, V.dining.budgetWeek) +
-  miniCat("Groceries", V.groceries.spentWeek, V.groceries.budgetWeek) +
-  miniCat("Shopping", V.shopping.spentMonth, V.shopping.budgetMonth) +
-  miniCat("Gas", V.gas.spentMonth, V.gas.typicalMonth, true) +
-  miniCat("Other", V.other.spentMonth, V.other.budgetMonth);
-
-// Column 3: Cash flow (week + month)
+// Top-right: Cash flow
 const cfWeek = P.cashflow.weekIn - P.cashflow.weekOut;
 const cfMonth = P.cashflow.monthIn - P.cashflow.monthOut;
 $("#colCashflow").innerHTML =
   `<div class="ch">Cash flow</div>` +
   `<div class="hero ${cfMonth>=0?'good':'bad'}">${(cfMonth>=0?"+":"")+money(cfMonth)}</div><div class="herosub">this month · in − out</div>` +
-  periodLine("Week net", cfWeek, cfWeek>=0?'good':'bad') +
-  periodLine("Month net", cfMonth, cfMonth>=0?'good':'bad') +
-  `<div class="mini" style="margin-top:1.6vh"></div>` +
-  `<div class="line"><span class="lname in" style="font-size:2.1vh">In (month)</span><span class="lamt in" style="font-size:2.1vh">${money(P.cashflow.monthIn)}</span></div>` +
-  `<div class="line"><span class="lname out" style="font-size:2.1vh">Out (month)</span><span class="lamt out" style="font-size:2.1vh">${money(P.cashflow.monthOut)}</span></div>`;
+  `<div class="line"><span class="lname">Week net</span><span class="lamt ${cfWeek>=0?'good':'bad'}">${(cfWeek>=0?'+':'')+money(cfWeek)}</span></div>` +
+  `<div class="line"><span class="lname in" style="font-size:2.1vh">In · month</span><span class="lamt in" style="font-size:2.1vh">${money(P.cashflow.monthIn)}</span></div>` +
+  `<div class="line"><span class="lname out" style="font-size:2.1vh">Out · month</span><span class="lamt out" style="font-size:2.1vh">${money(P.cashflow.monthOut)}</span></div>`;
+
+// Bottom: expenses split week / month
+function expRows(period){ // period = 'Week' or 'Month'
+  const sp = period==='Week'?'spentWeek':'spentMonth', bd = period==='Week'?'budgetWeek':'budgetMonth';
+  let html = catRow("Fixed", Fx[sp], Fx[period==='Week'?'weekly':'monthly'], "#8b6a3a");
+  const order = [["Dining","dining"],["Groceries","groceries"],["Shopping","shopping"],["Gas","gas"],["Other","other"]];
+  for(const [name,key] of order){ const c=V[key];
+    html += catRow(name, c[sp], c[bd], null, c.noCap); }
+  return html;
+}
+function catRow(name, spent, budget, fixedCol, noCap){
+  const p = budget?Math.min(100,spent/budget*100):0;
+  const col = fixedCol || (noCap?"#c98b8b":p<70?"#3fb950":p<100?"#d29922":"#f85149");
+  const right = noCap?money(spent):money(spent)+" / "+money(budget);
+  return `<div class="mini"><div class="minirow"><span class="mininame">${name}</span><span class="miniamt">${right}</span></div>${bar(spent,budget,col)}</div>`;
+}
+$("#expWeek").innerHTML = expRows('Week');
+$("#expMonth").innerHTML = expRows('Month');
 
 function bar(spent,target,col){ const p=target?Math.min(100,spent/target*100):0;
   return `<div class="minibar"><div style="width:${p}%;background:${col}"></div></div>`; }
-function miniCat(name,spent,target,noCap){ const p=target?Math.min(100,spent/target*100):0;
-  const col=noCap?"#c98b8b":p<70?"#3fb950":p<100?"#d29922":"#f85149";
-  const right=noCap?money(spent):money(spent)+" / "+money(target);
-  return `<div class="mini"><div class="minirow"><span class="mininame">${name}</span><span class="miniamt">${right}</span></div>${bar(spent,target,col)}</div>`;
-}
 
 /* ---- BUSINESS ---- */
 function bizCard(g){ const net=g.month.income-g.month.expenses;
@@ -374,6 +382,11 @@ $("#calGrid").innerHTML=g;
 $("#eventRows").innerHTML=DATA.events.map(e=>{ const dt=new Date(e.date+"T00:00");
   const w=dt.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})+(e.time?" · "+e.time:"");
   return `<li><div class="when">${w}</div><div class="what">${e.title}</div></li>`; }).join("")||"<li><div class='what'>No events</div></li>";
+/* week tasks on calendar */
+const wkTasks = DATA.tasks.week||[];
+$("#calTaskRows").innerHTML = wkTasks.length
+  ? wkTasks.map(t=>`<li class="${t.done?'done':''}" style="list-style:none;display:flex;align-items:center;gap:1vw;font-size:2.4vh;padding:.7vh 0"><span class="tbox">${t.done?'✓':''}</span>${t.text}</li>`).join("")
+  : "<li style='list-style:none;color:#7a4a4d;font-size:2.2vh'>No tasks this week</li>";
 
 $("#upd").textContent = DATA.updated;
 
