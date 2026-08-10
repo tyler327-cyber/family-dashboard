@@ -35,8 +35,8 @@ const DATA = {
 
   easylaunch: {
     day:   { income: 0, expenses: 0 },
-    week:  { income: 1529.98, expenses: 8468.12 },
-    month: { income: 1529.98, expenses: 8468.12 }
+    week:  { income: 1529.98, expenses: 1068.06 },
+    month: { income: 1529.98, expenses: 1068.06 }
   },
 
   personalBudget: {
@@ -77,7 +77,13 @@ const DATA = {
   },
 
   business: {
-    easylaunch: { name: "Easy Launch Services", month: { income: 1529.98, expenses: 8468.12 }, net: -6938.14 },
+    easylaunch: {
+      name: "Easy Launch Services",
+      month: { income: 1529.98, expenses: 1068.06 },
+      net: 461.92,
+      passThrough: { owner: "Kin", reimbursements: 7400.06, note: "Owner revenue/reimbursements excluded from profit." },
+      incomeNote: "Airbnb deposits need owner/property mapping; currently treated as income until classified."
+    },
     azramar:    { name: "AZ Ramar", month: { income: 0, expenses: 907.29 }, net: -907.29 }
   },
 
