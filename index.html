@@ -14,7 +14,7 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Sun Aug 9, 2026 · 6:00 PM",
+  updated: "Sun Aug 9, 2026 · 5:19 PM",
 
   wandaMessage: "Every dollar you keep this week is a brick in the house you're building.",
 
@@ -25,35 +25,33 @@ const DATA = {
   ],
 
   personal: {
-    // SECTION 1 — INCOME (money in)
+    // INCOME, EXPENSES, CASHFLOW — each split week + month
     income: {
-      items: [
-        { label: "Boeing (W2)", monthly: 0 },
-        { label: "Other", monthly: 0 }
-      ]
+      week:  0,
+      month: 0,
+      items: [ { label: "Boeing (W2)", monthly: 0 }, { label: "Other", monthly: 0 } ]
     },
-    // SECTION 2 — EXPENSES (fixed + variable)
-    // cashflow: bank money in vs out (card payments count as out)
-    cashflow: { monthIn: 0, monthOut: 2335 }
+    expenses: { week: 0, month: 0 },   // total spending (fixed+variable) — Wanda fills
+    cashflow: { weekIn: 0, weekOut: 0, monthIn: 0, monthOut: 0 }
   },
 
   business: {
-    easylaunch: { name: "Easy Launch Services", month: { income: 1529.98, expenses: 1068.06 } },
-    azramar:    { name: "AZ Ramar",             month: { income: 0, expenses: 907.29 } }
+    easylaunch: { name: "Easy Launch Services", month: { income: 0, expenses: 0 } },
+    azramar:    { name: "AZ Ramar",             month: { income: 0, expenses: 0 } }
   },
 
   buckets: {
     fixed: {
       monthly: 3600,
-      spent: 2335,
+      spent: 0,
       items: ["Rent", "Electric", "Internet", "Phone", "Insurance", "Student Loan"]
     },
     variable: {
-      dining:    { spentWeek: 170.75, budgetWeek: 175 },
-      groceries: { spentWeek: 208.8, budgetWeek: 150 },
-      shopping:  { spentMonth: 52.48, budgetMonth: 500 },
-      gas:       { spentMonth: 141.15, typicalMonth: 157 },
-      other:     { spentMonth: 58.37, budgetMonth: 150 }
+      dining:    { spentWeek: 0, budgetWeek: 175 },
+      groceries: { spentWeek: 0, budgetWeek: 150 },
+      shopping:  { spentMonth: 0, budgetMonth: 500 },
+      gas:       { spentMonth: 0, typicalMonth: 157 },
+      other:     { spentMonth: 0, budgetMonth: 150 }
     }
   },
 
@@ -62,15 +60,23 @@ const DATA = {
     houseFund: 0,
     sofi:      0,
     robinhood: 18763.48,
-    ira:       29420.05,
+    ira:       29420.05,   // Self-Directed IRA
     note: ""
   },
 
-  tasks: [
-    { text: "Example — pick up groceries", done: false },
-    { text: "Example — pay Wells Fargo", done: false },
-    { text: "Example — call Midway cleaning", done: true }
-  ],
+  tasks: {
+    day: [
+      { text: "Example — pick up groceries", done: false },
+      { text: "Example — call Midway cleaning", done: true }
+    ],
+    week: [
+      { text: "Example — pay Wells Fargo", done: false },
+      { text: "Example — schedule cleaner", done: true }
+    ],
+    month: [
+      { text: "Example — renew insurance", done: false }
+    ]
+  },
 
   events: [
     { date: "2026-08-10", time: "9:00 AM", title: "Dentist" },
@@ -105,16 +111,16 @@ const DATA = {
   .lbl { font-size:2vh; color:#c98b8b; text-transform:uppercase; letter-spacing:.08em; }
 
   /* SUMMARY screen */
-  .summary { display:flex; flex-direction:column; gap:2.2vh; flex:1; min-height:0; }
+  .summary { display:flex; flex-direction:column; gap:2vh; flex:1; min-height:0; }
   .wcard { display:flex; align-items:center; gap:2.5vw; background:#2a0d10; border:1px solid #4a1a1f;
-    border-radius:20px; padding:2.6vh 3vh; box-shadow:0 0 40px rgba(224,62,82,.15) inset; }
-  .wportrait { height:22vh; border-radius:16px; flex:0 0 auto; box-shadow:0 0 30px rgba(224,62,82,.35); }
-  .wmsg { font-size:3.6vh; line-height:1.3; font-weight:500; }
-  .sumgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:2.2vh; flex:1; }
+    border-radius:20px; padding:2.2vh 3vh; box-shadow:0 0 40px rgba(224,62,82,.15) inset; flex:0 0 auto; }
+  .wportrait { height:18vh; border-radius:16px; flex:0 0 auto; box-shadow:0 0 30px rgba(224,62,82,.35); }
+  .wmsg { font-size:3.4vh; line-height:1.3; font-weight:500; }
+  .sumgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:2.2vh; flex:1; min-height:0; }
   .sumtile { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2.8vh; display:flex; flex-direction:column; justify-content:center; }
   .sumtile .big { font-size:5.5vh; font-weight:700; font-variant-numeric:tabular-nums; line-height:1; margin:.6vh 0; }
   .sumtile .sub { font-size:2vh; color:#c98b8b; }
-  .goalrow { display:flex; gap:2vw; }
+  .goalrow { display:flex; gap:2vw; flex:0 0 auto; padding-bottom:1vh; }
   .goalrow .g { flex:1; text-align:center; }
   .goalrow .ge { font-size:3.4vh; } .goalrow .gl { font-size:2.2vh; color:#ff7a8a; font-weight:600; }
 
@@ -153,6 +159,17 @@ const DATA = {
   .savetotal b { color:#3fb950; font-size:3.4vh; }
 
   /* TASKS */
+  .taskgroups { display:grid; grid-template-columns:repeat(3,1fr); gap:2.2vw; flex:1; min-height:0; }
+  .tgroup { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2.6vh; display:flex; flex-direction:column; }
+  .tgtitle { display:flex; justify-content:space-between; align-items:baseline; font-size:2.8vh; font-weight:600; color:#ff7a8a; }
+  .tgpct { font-size:2.6vh; color:#c98b8b; font-variant-numeric:tabular-nums; } .tgpct.good { color:#3fb950; }
+  .tgbar { height:1.4vh; background:#3a1418; border-radius:99px; overflow:hidden; margin:1.2vh 0 2vh; }
+  .tgbar > div { height:100%; background:#3fb950; border-radius:99px; }
+  .tgitems { list-style:none; } .tgitems li { display:flex; align-items:center; gap:1vw; font-size:2.6vh; padding:1vh 0; }
+  .tbox { width:3vh; height:3vh; border:.3vh solid #5a2428; border-radius:.7vh; flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-size:2vh; }
+  .tgitems .done { color:#7a4a4d; text-decoration:line-through; } .tgitems .done .tbox { border-color:#238636; color:#3fb950; }
+  .tgempty { color:#7a4a4d; font-size:2.3vh; margin-top:1vh; }
+
   .tasklist { font-size:var(--taskSize,4vh); line-height:1.9; flex:1; }
   .tasklist li { list-style:none; display:flex; align-items:center; gap:1.5vw; }
   .box { width:3.4vh; height:3.4vh; border:.35vh solid #5a2428; border-radius:.9vh; flex:0 0 auto;
@@ -218,7 +235,7 @@ const DATA = {
 <!-- 4 TASKS -->
 <section class="screen" id="s4">
   <header><h1>Tasks <span class="tag" id="taskCount"></span></h1><div class="clock"></div></header>
-  <ul class="tasklist" id="taskRows"></ul>
+  <div class="taskgroups" id="taskGroups"></div>
 </section>
 
 <!-- 5 CALENDAR -->
@@ -239,9 +256,8 @@ const money = n => (n<0?"-$":"$") + Math.abs(n).toLocaleString("en-US",{maximumF
 const P = DATA.personal, V = DATA.buckets.variable, Fx = DATA.buckets.fixed;
 
 /* ---- shared totals ---- */
-const incomeTotal = P.income.items.reduce((s,i)=>s+i.monthly,0);
-const varMonth = V.dining.spentWeek*4.33 + V.groceries.spentWeek*4.33 + V.shopping.spentMonth + V.gas.spentMonth + V.other.spentMonth;
 const cfNet = P.cashflow.monthIn - P.cashflow.monthOut;
+const incomeTotal = P.income.month;
 
 /* ---- SUMMARY ---- */
 const hr = new Date().getHours();
@@ -256,26 +272,42 @@ $("#sumGrid").innerHTML =
 function tile(lbl,big,cls,sub){ return `<div class="sumtile"><div class="lbl">${lbl}</div><div class="big ${cls}">${big}</div><div class="sub">${sub}</div></div>`; }
 $("#goalRow").innerHTML = DATA.goals.map(g=>`<div class="g"><div class="ge">${g.emoji}</div><div class="gl">${g.label}</div></div>`).join("");
 
-/* ---- PERSONAL: 3 columns ---- */
-// Column 1: Income
+/* ---- PERSONAL: 3 columns, each week + month ---- */
+function periodLine(label, val, cls){ return `<div class="line"><span class="lname">${label}</span><span class="lamt ${cls||''}">${(cls==='good'&&val>=0?'+':'')}${money(val)}</span></div>`; }
+
+// Column 1: Income (week + month)
 $("#colIncome").innerHTML =
-  `<div class="ch">Income · month</div><div class="hero good">${money(incomeTotal)}</div><div class="herosub">money in</div>` +
-  P.income.items.map(i=>`<div class="line"><span class="lname">${i.label}</span><span class="lamt good">${money(i.monthly)}</span></div>`).join("");
-// Column 2: Expenses (fixed + variable)
+  `<div class="ch">Income</div>` +
+  `<div class="hero good">${money(P.income.month)}</div><div class="herosub">this month</div>` +
+  periodLine("This week", P.income.week, "good") +
+  periodLine("This month", P.income.month, "good") +
+  `<div class="mini"></div>` +
+  P.income.items.map(i=>`<div class="line"><span class="lname" style="font-size:2.1vh;color:#c98b8b">${i.label}</span><span class="lamt good" style="font-size:2.1vh">${money(i.monthly)}</span></div>`).join("");
+
+// Column 2: Expenses (week + month totals, then category bars)
 $("#colExpenses").innerHTML =
   `<div class="ch">Expenses</div>` +
-  `<div class="line"><span class="lname">Fixed bills</span><span class="lamt">${money(Fx.spent)} / ${money(Fx.monthly)}</span></div>` +
-  bar(Fx.spent, Fx.monthly, "#8b6a3a") +
+  `<div class="hero bad">${money(P.expenses.month)}</div><div class="herosub">this month</div>` +
+  periodLine("This week", P.expenses.week) +
+  periodLine("This month", P.expenses.month) +
+  `<div class="mini" style="margin-top:1.6vh"><div class="minirow"><span class="mininame" style="color:#c98b8b">Fixed</span><span class="miniamt">${money(Fx.spent)} / ${money(Fx.monthly)}</span></div>${bar(Fx.spent,Fx.monthly,"#8b6a3a")}</div>` +
   miniCat("Dining", V.dining.spentWeek, V.dining.budgetWeek) +
   miniCat("Groceries", V.groceries.spentWeek, V.groceries.budgetWeek) +
   miniCat("Shopping", V.shopping.spentMonth, V.shopping.budgetMonth) +
   miniCat("Gas", V.gas.spentMonth, V.gas.typicalMonth, true) +
   miniCat("Other", V.other.spentMonth, V.other.budgetMonth);
-// Column 3: Net cash flow
+
+// Column 3: Cash flow (week + month)
+const cfWeek = P.cashflow.weekIn - P.cashflow.weekOut;
+const cfMonth = P.cashflow.monthIn - P.cashflow.monthOut;
 $("#colCashflow").innerHTML =
-  `<div class="ch">Cash flow · month</div><div class="hero ${cfNet>=0?'good':'bad'}">${(cfNet>=0?"+":"")+money(cfNet)}</div><div class="herosub">bank money in − out</div>` +
-  `<div class="line"><span class="lname in">Money in</span><span class="lamt in">${money(P.cashflow.monthIn)}</span></div>` +
-  `<div class="line"><span class="lname out">Money out</span><span class="lamt out">${money(P.cashflow.monthOut)}</span></div>`;
+  `<div class="ch">Cash flow</div>` +
+  `<div class="hero ${cfMonth>=0?'good':'bad'}">${(cfMonth>=0?"+":"")+money(cfMonth)}</div><div class="herosub">this month · in − out</div>` +
+  periodLine("Week net", cfWeek, cfWeek>=0?'good':'bad') +
+  periodLine("Month net", cfMonth, cfMonth>=0?'good':'bad') +
+  `<div class="mini" style="margin-top:1.6vh"></div>` +
+  `<div class="line"><span class="lname in" style="font-size:2.1vh">In (month)</span><span class="lamt in" style="font-size:2.1vh">${money(P.cashflow.monthIn)}</span></div>` +
+  `<div class="line"><span class="lname out" style="font-size:2.1vh">Out (month)</span><span class="lamt out" style="font-size:2.1vh">${money(P.cashflow.monthOut)}</span></div>`;
 
 function bar(spent,target,col){ const p=target?Math.min(100,spent/target*100):0;
   return `<div class="minibar"><div style="width:${p}%;background:${col}"></div></div>`; }
@@ -307,12 +339,23 @@ $("#saveGrid").innerHTML =
 function saveCard(name,val,note,cls){ return `<div class="savecard"><div class="sname">${name}</div><div class="sval ${cls}">${money(val)}</div><div class="snote">${note}</div></div>`; }
 $("#saveTotal").innerHTML = `Total saved &amp; invested: <b>${money(savingsTotal)}</b>`;
 
-/* ---- TASKS ---- */
-const nT = DATA.tasks.length;
-$("#taskCount").textContent = "· " + nT + " this week";
-const ts = nT<=6?4:nT<=9?3.3:nT<=13?2.7:2.2;
-document.documentElement.style.setProperty("--taskSize", ts+"vh");
-$("#taskRows").innerHTML = DATA.tasks.map(t=>`<li class="${t.done?'done':''}"><span class="box">${t.done?'✓':''}</span>${t.text}</li>`).join("") || "<li>No tasks yet</li>";
+/* ---- TASKS: grouped day/week/month with % ---- */
+const allTasks = [...(DATA.tasks.day||[]), ...(DATA.tasks.week||[]), ...(DATA.tasks.month||[])];
+$("#taskCount").textContent = "· " + allTasks.filter(t=>!t.done).length + " open";
+function taskGroup(title, list){
+  if(!list || !list.length) return `<div class="tgroup"><div class="tgtitle">${title}<span class="tgpct">—</span></div><div class="tgempty">nothing yet</div></div>`;
+  const done = list.filter(t=>t.done).length;
+  const pct = Math.round(done/list.length*100);
+  return `<div class="tgroup">
+    <div class="tgtitle">${title}<span class="tgpct ${pct===100?'good':''}">${pct}%</span></div>
+    <div class="tgbar"><div style="width:${pct}%"></div></div>
+    <ul class="tgitems">${list.map(t=>`<li class="${t.done?'done':''}"><span class="tbox">${t.done?'✓':''}</span>${t.text}</li>`).join("")}</ul>
+  </div>`;
+}
+$("#taskGroups").innerHTML =
+  taskGroup("Today", DATA.tasks.day) +
+  taskGroup("This Week", DATA.tasks.week) +
+  taskGroup("This Month", DATA.tasks.month);
 
 /* ---- CALENDAR ---- */
 const now=new Date();
