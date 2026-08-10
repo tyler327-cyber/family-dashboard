@@ -8,126 +8,74 @@
 <script>
 /* ==========================================================
    WANDA: EDIT ONLY THIS DATA BLOCK.
-   Two money worlds: personal and easylaunch.
-   Each has income & expenses for day / week / month.
-   "net" is auto-calculated (income - expenses) — leave it out.
-   Then commit + push. The TV refreshes itself within 5 min.
-   Do not touch anything below END WANDA DATA.
+   All numbers are plain JS numbers — NO $ signs, NO commas.
+   e.g. 18763.48  (never "$18,763.48")
+   After editing, run node --check on the extracted script and
+   confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
   updated: "Sun Aug 9, 2026 · 5:19 PM",
 
-  // Wanda writes this fresh each morning — tie it to the week's numbers + the goals below
-  wandaMessage: "Every dollar you keep this week is a brick in the house you're building. You're closer than yesterday — keep going.",
+  wandaMessage: "Every dollar you keep this week is a brick in the house you're building.",
 
-  // The "why" — what all of this is for
   goals: [
-    { emoji: "🏡", label: "Our house", note: "saving toward the down payment" },
-    { emoji: "👶", label: "Growing our family", note: "building a stable foundation" },
+    { emoji: "🏡", label: "Our house", note: "down payment" },
+    { emoji: "👶", label: "Family", note: "stable foundation" },
     { emoji: "💳", label: "Debt-free", note: "one payment at a time" }
   ],
 
   personal: {
-    day:   { income: 0, expenses: 0 },
-    week:  { income: 0, expenses: 2335 },
-    month: { income: 0, expenses: 2335 },
-    cashflow: {
-      monthIn: 0,
-      monthOut: 2335,
-      monthNet: -2335,
-      note: "Bank cash flow: card payments count as outflow; own savings transfers do not count as income."
-    }
-  },
-
-  easylaunch: {
-    day:   { income: 0, expenses: 0 },
-    week:  { income: 1529.98, expenses: 1068.06 },
-    month: { income: 1529.98, expenses: 1068.06 }
-  },
-
-  personalBudget: {
-    day:   71.43,
-    week:  500.00,
-    month: 2000.00
-  },
-
-  // Personal cash flow uses bank lines; category buckets use card charges only.
-  cashflow: {
-    monthIn: 0,
-    monthOut: 2335,
-    monthNet: -2335,
-    note: "Bank cash flow: card payments count as outflow; own savings transfers do not count as income."
-  },
-
-  // THREE BUCKETS — fixed from bank expenses; variable from Amex card charges only.
-  buckets: {
-    fixed: {
-      spent: 2335,
-      monthly: 3600,
+    // SECTION 1 — INCOME (money in)
+    income: {
       items: [
-        { name: "Rent", amount: 2275 },
-        { name: "Electric", amount: 0 },
-        { name: "Internet", amount: 60 },
-        { name: "Phone", amount: 0 },
-        { name: "Auto Insurance", amount: 0 },
-        { name: "Student Loan", amount: 0 }
+        { label: "Boeing (W2)", monthly: 0 },      // Wanda fills from Chase deposits
+        { label: "Other", monthly: 0 }
       ]
     },
-    variable: {
-      dining:      { spentWeek: 170.75, spentMonth: 279.22, budgetWeek: 175 },
-      groceries:   { spentWeek: 208.8, spentMonth: 240.75, budgetWeek: 150 },
-      shopping:    { spentMonth: 52.48, budgetMonth: 500 },
-      gas:         { spentMonth: 141.15, typicalMonth: 157 },
-      other:       { spentMonth: 58.37, budgetMonth: 150 }
-    }
+    // SECTION 2 — EXPENSES (fixed + variable)
+    // cashflow: bank money in vs out (card payments count as out)
+    cashflow: { monthIn: 0, monthOut: 0 }
   },
 
   business: {
-    easylaunch: {
-      name: "Easy Launch Services",
-      month: { income: 1529.98, expenses: 1068.06 },
-      net: 461.92,
-      passThrough: { owner: "Kin", reimbursements: 7400.06, note: "Owner revenue/reimbursements excluded from profit." },
-      incomeNote: "Airbnb deposits need owner/property mapping; currently treated as income until classified."
+    easylaunch: { name: "Easy Launch Services", month: { income: 0, expenses: 0 } },
+    azramar:    { name: "AZ Ramar",             month: { income: 0, expenses: 0 } }
+  },
+
+  buckets: {
+    fixed: {
+      monthly: 3600,
+      spent: 0,
+      items: ["Rent", "Electric", "Internet", "Phone", "Insurance", "Student Loan"]
     },
-    azramar:    { name: "AZ Ramar", month: { income: 0, expenses: 907.29 }, net: -907.29 }
+    variable: {
+      dining:    { spentWeek: 0, budgetWeek: 175 },
+      groceries: { spentWeek: 0, budgetWeek: 150 },
+      shopping:  { spentMonth: 0, budgetMonth: 500 },
+      gas:       { spentMonth: 0, typicalMonth: 157 },
+      other:     { spentMonth: 0, budgetMonth: 150 }
+    }
   },
 
-  // Savings / investments — Tyler updates balances manually.
+  // Savings + investments — Tyler reports these balances manually
   savings: {
-    robinhood: 18763.48,
-    sofi:      0,
     houseFund: 0,
-    transferIn: 595.98,
-    transferOut: 0,
-    note: "Manual balances; transfers are not spending or income."
+    sofi:      0,
+    robinhood: 18763.48,
+    ira:       29420.05,   // Self-Directed IRA
+    note: ""
   },
-
-  // Last few transactions per world (newest first) — Wanda keeps ~5 each, fills the lower screen
-  recentPersonal: [
-    { date: "Aug 7", account: "Amex 83007", amount: -11.74, note: "TST* BALLAST POINT LLONG BEACH CA" },
-    { date: "Aug 7", account: "Amex 83007", amount: -21.65, note: "SUBWAY 22692-0 22692TUSTIN CA" },
-    { date: "Aug 7", account: "Amex 83007", amount: -81.82, note: "SHELL SERVICE STATIOTUSTIN CA" },
-    { date: "Aug 7", account: "Amex 83007", amount: -11.04, note: "PAVILIONS #2203 2203LONG BEACH CA" },
-    { date: "Aug 7", account: "Amex 83007", amount: -10, note: "IN-N-OUT LONG BEACH LONG BEACH CA" }
-  ],
-  recentEasy: [
-    { date: "Aug 7", account: "Chase 3235", amount: 26.57, note: "Airbnb · Easy Launch Services" },
-    { date: "Aug 4", account: "Chase 3235", amount: 70.07, note: "Airbnb · Easy Launch Services" },
-    { date: "Aug 4", account: "Chase 3235", amount: 1433.34, note: "Airbnb · Easy Launch Services" },
-    { date: "Aug 3", account: "Chase 1969", amount: -907.29, note: "Mortgage · AZ Ramar" }
-  ],
 
   tasks: [
     { text: "Example — pick up groceries", done: false },
-    { text: "Example — pay Wells Fargo payment", done: false },
-    { text: "Example — call about Midway cleaning", done: true }
+    { text: "Example — pay Wells Fargo", done: false },
+    { text: "Example — call Midway cleaning", done: true }
   ],
 
   events: [
-    { date: "2026-08-10", time: "9:00 AM", title: "Example — Dentist" },
-    { date: "2026-08-12", time: "6:30 PM", title: "Example — Dinner with family" },
-    { date: "2026-08-15", time: "",        title: "Example — Rent due" }
+    { date: "2026-08-10", time: "9:00 AM", title: "Dentist" },
+    { date: "2026-08-12", time: "6:30 PM", title: "Dinner with family" },
+    { date: "2026-08-15", time: "",        title: "Rent due" }
   ]
 };
 /* ================= END WANDA DATA ========================= */
@@ -135,119 +83,103 @@ const DATA = {
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   html, body { height:100%; background:#1a0608; color:#fbe9e9;
-    font-family:-apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    overflow:hidden; }
+    font-family:-apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; overflow:hidden; }
   body::before { content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
     background:radial-gradient(ellipse 90% 70% at 50% 0%, rgba(224,62,82,.18), transparent 60%),
                radial-gradient(ellipse 60% 50% at 100% 100%, rgba(180,30,50,.14), transparent 60%); }
-  .wanda { position:fixed; bottom:0; right:2vw; height:62vh; z-index:0; opacity:.16;
-    pointer-events:none; -webkit-mask-image:linear-gradient(to top, transparent, #000 40%);
-    mask-image:linear-gradient(to top, transparent, #000 40%); }
-  .screen { position:absolute; inset:0; padding:4vh 5vw; opacity:0; z-index:1;
-    transition:opacity 1.2s ease; pointer-events:none; display:flex; flex-direction:column; }
+  .wanda { position:fixed; bottom:0; right:2vw; height:56vh; z-index:0; opacity:.12; pointer-events:none;
+    -webkit-mask-image:linear-gradient(to top, transparent, #000 45%); mask-image:linear-gradient(to top, transparent, #000 45%); }
+
+  .screen { position:absolute; inset:0; padding:4vh 4vw; opacity:0; z-index:1;
+    transition:opacity 1s ease; pointer-events:none; display:flex; flex-direction:column; }
   .screen.active { opacity:1; pointer-events:auto; }
-  header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3vh; }
-  .cashflow { margin-bottom:2vh; }
-  .cfcard { border-radius:16px; padding:2.4vh 2.8vh; border:1px solid #4a1a1f; background:#2a0d10; }
-  .cfcard.cfgood { box-shadow:0 0 30px rgba(63,185,80,.12) inset; }
-  .cfcard.cfbad { box-shadow:0 0 30px rgba(248,81,73,.14) inset; }
-  .cflabel { font-size:2.2vh; color:#d99a9a; text-transform:uppercase; letter-spacing:.08em; }
-  .cfnum { font-size:6vh; font-weight:700; font-variant-numeric:tabular-nums; line-height:1.1; }
-  .cfgood .cfnum { color:#3fb950; } .cfbad .cfnum { color:#f85149; }
-  .cfsub { font-size:2.2vh; color:#d99a9a; margin-top:.4vh; }
-  .cfsub .in { color:#3fb950; } .cfsub .out { color:#f85149; }
-  .bizgroups { display:grid; grid-template-columns:repeat(2,1fr); gap:3vh; flex:1; min-height:0; align-content:center; }
-  .bizcard { background:#2a0d10; border:1px solid #4a1a1f; border-radius:20px; padding:4vh; text-align:center; }
-  .bizname { font-size:3.2vh; font-weight:600; color:#ff7a8a; }
-  .biznet { font-size:7vh; font-weight:700; font-variant-numeric:tabular-nums; margin:1.5vh 0; }
-  .bizcard .io { font-size:2.6vh; }
-  .bizcard .io .in { color:#3fb950; } .bizcard .io .out { color:#f85149; }
-  .bizsub { font-size:2.1vh; color:#d99a9a; margin-top:1vh; text-transform:uppercase; letter-spacing:.06em; }
-
-  .buckets { display:flex; flex-direction:column; gap:2vh; flex:1; min-height:0; }
-  .bkt { background:#2a0d10; border:1px solid #4a1a1f; border-radius:16px; padding:2.2vh 2.8vh; }
-  .bkt .btop { display:flex; justify-content:space-between; align-items:baseline; }
-  .bkt .bname { font-size:2.8vh; font-weight:600; }
-  .bkt .bname .bsub { font-size:2vh; color:#d99a9a; font-weight:400; margin-left:1vw; }
-  .bkt .bval { font-size:2.8vh; font-variant-numeric:tabular-nums; font-weight:600; }
-  .bkt .bar { height:2vh; margin-top:1.2vh; }
-  .bkt.head { background:transparent; border:none; padding:.5vh 0; }
-  .bkt.head .bname { font-size:2.3vh; color:#d99a9a; text-transform:uppercase; letter-spacing:.08em; }
-  .recent-sm { margin-top:1.5vh; padding:1.6vh 2.4vh; flex:0 0 auto; }
-  .recent-sm li { font-size:2.1vh; padding:.7vh 0; }
-
-  .summary { display:flex; flex-direction:column; gap:2.5vh; flex:1; min-height:0; }
-  .wcard { display:flex; align-items:center; gap:3vw; background:#2a0d10; border:1px solid #4a1a1f;
-    border-radius:22px; padding:3vh 3.5vh; box-shadow:0 0 40px rgba(224,62,82,.15) inset; }
-  .wportrait { height:26vh; border-radius:18px; flex:0 0 auto;
-    box-shadow:0 0 30px rgba(224,62,82,.35); }
-  .wmsg { font-size:4vh; line-height:1.35; color:#fbe9e9; font-weight:500; }
-  .goals { display:grid; grid-template-columns:repeat(3,1fr); gap:2.5vh; }
-  .goal { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2.4vh; text-align:center; }
-  .goal .gemoji { font-size:5vh; }
-  .goal .glabel { font-size:2.8vh; font-weight:600; margin-top:.6vh; color:#ff7a8a; }
-  .goal .gnote { font-size:2.1vh; color:#d99a9a; margin-top:.4vh; }
-  .headline { font-size:2.6vh; color:#d99a9a; text-align:center; margin-top:auto; }
-  .headline b { color:#3fb950; }
-
-  h1 { font-size:4.2vh; letter-spacing:.06em; font-weight:600; text-transform:uppercase; color:#ff7a8a; text-shadow:0 0 24px rgba(224,62,82,.4); }
-  h1 .tag { color:#d99a9a; }
-  .clock { font-size:4.2vh; color:#d99a9a; font-variant-numeric:tabular-nums; }
-
-  .periods { display:grid; grid-template-columns:repeat(3,1fr); gap:2.5vh; margin-bottom:2.5vh; }
-  .pcard { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2.6vh; text-align:center; }
-  .pcard .plabel { font-size:2.2vh; color:#d99a9a; text-transform:uppercase; letter-spacing:.08em; margin-bottom:.8vh; }
-  .pcard .net { font-size:6vh; font-weight:700; font-variant-numeric:tabular-nums; line-height:1.05; }
-  .pcard .io { font-size:2.3vh; color:#d99a9a; margin-top:1vh; }
-  .pcard .io .in { color:#3fb950; } .pcard .io .out { color:#f85149; }
+  header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:2.5vh; }
+  h1 { font-size:3.8vh; letter-spacing:.05em; font-weight:700; text-transform:uppercase; color:#ff7a8a; text-shadow:0 0 24px rgba(224,62,82,.4); }
+  h1 .tag { color:#c98b8b; font-weight:400; }
+  .clock { font-size:3.6vh; color:#c98b8b; font-variant-numeric:tabular-nums; }
   .good { color:#3fb950; } .bad { color:#f85149; } .warn { color:#d29922; }
+  .in { color:#3fb950; } .out { color:#f85149; }
 
-  .budget { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2.8vh; margin-top:auto; }
-  .budget .blabel { font-size:2.2vh; color:#d99a9a; text-transform:uppercase; letter-spacing:.08em; }
-  .budget .bnum { font-size:4vh; font-weight:700; font-variant-numeric:tabular-nums; margin-top:.6vh; }
-  .bar { height:2.6vh; background:#4a1a1f; border-radius:99px; overflow:hidden; margin-top:1.4vh; }
-  .bar > div { height:100%; border-radius:99px; }
+  /* generic card */
+  .card { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2.6vh; }
+  .lbl { font-size:2vh; color:#c98b8b; text-transform:uppercase; letter-spacing:.08em; }
 
-  .recent { margin-top:2.5vh; background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2.4vh 2.8vh; flex:1; min-height:0; overflow:hidden; }
-  .recent .rlabel { font-size:2.2vh; color:#d99a9a; text-transform:uppercase; letter-spacing:.08em; margin-bottom:1.4vh; }
-  .recent ul { list-style:none; }
-  .recent li { display:flex; justify-content:space-between; align-items:baseline; font-size:2.7vh; padding:1.1vh 0; border-bottom:1px solid #3a1418; }
-  .recent li:last-child { border-bottom:none; }
-  .recent .rleft { color:#fbe9e9; }
-  .recent .rleft .rdate { color:#d99a9a; font-size:2.1vh; margin-right:1vw; }
-  .recent .rnote { color:#d99a9a; font-size:2.1vh; margin-left:1vw; }
-  .recent .ramt { font-variant-numeric:tabular-nums; font-weight:600; }
+  /* SUMMARY screen */
+  .summary { display:flex; flex-direction:column; gap:2.2vh; flex:1; min-height:0; }
+  .wcard { display:flex; align-items:center; gap:2.5vw; background:#2a0d10; border:1px solid #4a1a1f;
+    border-radius:20px; padding:2.6vh 3vh; box-shadow:0 0 40px rgba(224,62,82,.15) inset; }
+  .wportrait { height:22vh; border-radius:16px; flex:0 0 auto; box-shadow:0 0 30px rgba(224,62,82,.35); }
+  .wmsg { font-size:3.6vh; line-height:1.3; font-weight:500; }
+  .sumgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:2.2vh; flex:1; }
+  .sumtile { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2.8vh; display:flex; flex-direction:column; justify-content:center; }
+  .sumtile .big { font-size:5.5vh; font-weight:700; font-variant-numeric:tabular-nums; line-height:1; margin:.6vh 0; }
+  .sumtile .sub { font-size:2vh; color:#c98b8b; }
+  .goalrow { display:flex; gap:2vw; }
+  .goalrow .g { flex:1; text-align:center; }
+  .goalrow .ge { font-size:3.4vh; } .goalrow .gl { font-size:2.2vh; color:#ff7a8a; font-weight:600; }
 
-  .tasklist { font-size:var(--taskSize, 4.2vh); line-height:1.9; }
+  /* PERSONAL — three columns */
+  .cols3 { display:grid; grid-template-columns:1fr 1.3fr 1fr; gap:2.2vw; flex:1; min-height:0; }
+  .col { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2.6vh; display:flex; flex-direction:column; }
+  .col .ch { font-size:2.2vh; color:#c98b8b; text-transform:uppercase; letter-spacing:.08em; margin-bottom:1.6vh; }
+  .col .hero { font-size:5vh; font-weight:700; font-variant-numeric:tabular-nums; line-height:1; }
+  .col .herosub { font-size:2vh; color:#c98b8b; margin-top:.6vh; margin-bottom:2vh; }
+  .line { display:flex; justify-content:space-between; align-items:baseline; font-size:2.5vh; padding:1vh 0; border-bottom:1px solid #3a1418; }
+  .line:last-child { border-bottom:none; }
+  .line .lname { color:#e8d5d5; } .line .lamt { font-variant-numeric:tabular-nums; font-weight:600; }
+  .mini { margin-top:1vh; }
+  .minibar { height:1.4vh; background:#3a1418; border-radius:99px; overflow:hidden; margin-top:.6vh; }
+  .minibar > div { height:100%; border-radius:99px; }
+  .minirow { display:flex; justify-content:space-between; font-size:2.1vh; }
+  .mininame { color:#e8d5d5; } .miniamt { font-variant-numeric:tabular-nums; }
+
+  /* BUSINESS */
+  .bizgrid { display:grid; grid-template-columns:repeat(2,1fr); gap:2.5vw; flex:1; min-height:0; }
+  .bizcard { background:#2a0d10; border:1px solid #4a1a1f; border-radius:20px; padding:3vh; display:flex; flex-direction:column; }
+  .bizname { font-size:3vh; font-weight:700; color:#ff7a8a; text-align:center; }
+  .biznet { font-size:6.5vh; font-weight:700; font-variant-numeric:tabular-nums; text-align:center; margin:1.5vh 0; }
+  .bizIO { display:flex; justify-content:space-around; font-size:2.6vh; margin-bottom:2vh; }
+  .bizIO .col2 { text-align:center; } .bizIO .k { font-size:1.9vh; color:#c98b8b; text-transform:uppercase; }
+  .bizItems { margin-top:auto; }
+  .bizItems .line { font-size:2.2vh; }
+
+  /* SAVINGS */
+  .savegrid { display:grid; grid-template-columns:repeat(2,1fr); gap:2.5vh; flex:1; min-height:0; align-content:center; }
+  .savecard { background:#2a0d10; border:1px solid #4a1a1f; border-radius:20px; padding:3.5vh; text-align:center; display:flex; flex-direction:column; justify-content:center; }
+  .savecard .sname { font-size:2.4vh; color:#c98b8b; text-transform:uppercase; letter-spacing:.06em; }
+  .savecard .sval { font-size:6vh; font-weight:700; font-variant-numeric:tabular-nums; margin:1vh 0; }
+  .savecard .snote { font-size:2vh; color:#c98b8b; }
+  .savetotal { text-align:center; font-size:2.8vh; color:#c98b8b; margin-top:2vh; }
+  .savetotal b { color:#3fb950; font-size:3.4vh; }
+
+  /* TASKS */
+  .tasklist { font-size:var(--taskSize,4vh); line-height:1.9; flex:1; }
   .tasklist li { list-style:none; display:flex; align-items:center; gap:1.5vw; }
-  .box { width:3.6vh; height:3.6vh; border:.35vh solid #5a2428; border-radius:.9vh; flex:0 0 auto;
-    display:flex; align-items:center; justify-content:center; font-size:2.6vh; }
-  .done { color:#7a4a4d; text-decoration:line-through; }
-  .done .box { border-color:#3fb950; color:#3fb950; }
+  .box { width:3.4vh; height:3.4vh; border:.35vh solid #5a2428; border-radius:.9vh; flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center; font-size:2.4vh; }
+  .done { color:#7a4a4d; text-decoration:line-through; } .done .box { border-color:#238636; color:#3fb950; }
 
-  .cal { display:grid; grid-template-columns:1.15fr .85fr; gap:3vw; flex:1; min-height:0; }
+  /* CALENDAR */
+  .cal { display:grid; grid-template-columns:1.1fr .9fr; gap:2.5vw; flex:1; min-height:0; }
   .grid { display:grid; grid-template-columns:repeat(7,1fr); gap:.6vh; align-content:start; }
-  .grid .dow { font-size:1.9vh; color:#d99a9a; text-align:center; text-transform:uppercase; padding:.6vh 0; }
-  .grid .day { aspect-ratio:1.5; background:#2a0d10; border:1px solid #4a1a1f; border-radius:10px;
-    font-size:2.4vh; padding:.7vh; color:#d99a9a; }
+  .grid .dow { font-size:1.8vh; color:#c98b8b; text-align:center; text-transform:uppercase; padding:.5vh 0; }
+  .grid .day { aspect-ratio:1.5; background:#2a0d10; border:1px solid #4a1a1f; border-radius:10px; font-size:2.2vh; padding:.6vh; color:#c98b8b; }
   .grid .day.today { background:#e03e52; color:#fff; font-weight:700; }
   .grid .day.hasEvent { border-color:#d29922; color:#fbe9e9; }
-  .events li { list-style:none; background:#2a0d10; border:1px solid #4a1a1f; border-radius:14px;
-    padding:2vh; margin-bottom:1.6vh; }
-  .events .when { font-size:2.1vh; color:#d29922; text-transform:uppercase; letter-spacing:.06em; }
-  .events .what { font-size:3.2vh; margin-top:.4vh; }
+  .events li { list-style:none; background:#2a0d10; border:1px solid #4a1a1f; border-radius:14px; padding:1.8vh; margin-bottom:1.4vh; }
+  .events .when { font-size:2vh; color:#d29922; text-transform:uppercase; letter-spacing:.05em; }
+  .events .what { font-size:2.9vh; margin-top:.3vh; }
 
-  .dots { position:absolute; bottom:2.5vh; left:0; right:0; display:flex; justify-content:center; gap:1.4vh; z-index:10; }
-  .dots span { width:1.4vh; height:1.4vh; border-radius:50%; background:#5a2428; transition:background .4s;
-    cursor:pointer; padding:1.2vh; background-clip:content-box; }
+  .dots { position:absolute; bottom:2.2vh; left:0; right:0; display:flex; justify-content:center; gap:1.2vh; z-index:10; }
+  .dots span { width:1.3vh; height:1.3vh; border-radius:50%; background:#5a2428; padding:1vh; background-clip:content-box; cursor:pointer; }
   .dots span.on { background:#fbe9e9; background-clip:content-box; }
-  .updated { position:absolute; bottom:2.3vh; right:3vw; font-size:1.8vh; color:#7a4a4d; }
+  .updated { position:absolute; bottom:2vh; right:2.5vw; font-size:1.7vh; color:#7a4a4d; z-index:5; }
 </style>
 </head>
 <body>
 <img class="wanda" src="wanda.png" alt="" onerror="this.style.display='none'">
 
-<!-- SCREEN 0: WANDA SUMMARY -->
+<!-- 0 SUMMARY -->
 <section class="screen" id="s0">
   <header><h1 id="greet">Good morning</h1><div class="clock"></div></header>
   <div class="summary">
@@ -255,41 +187,42 @@ const DATA = {
       <img class="wportrait" src="wanda.png" alt="Wanda" onerror="this.style.display='none'">
       <div class="wmsg" id="wandaMsg"></div>
     </div>
-    <div class="goals" id="goalRows"></div>
-    <div class="headline" id="headline"></div>
+    <div class="sumgrid" id="sumGrid"></div>
+    <div class="goalrow" id="goalRow"></div>
   </div>
 </section>
 
-
-<!-- SCREEN 1: PERSONAL -->
+<!-- 1 PERSONAL -->
 <section class="screen" id="s1">
   <header><h1>Personal <span class="tag">· Money</span></h1><div class="clock"></div></header>
-  <div class="cashflow" id="cashflowRow"></div>
-  <div class="buckets" id="bucketRows"></div>
-  <div class="recent recent-sm"><ul id="recentPersonalRows"></ul></div>
+  <div class="cols3">
+    <div class="col" id="colIncome"></div>
+    <div class="col" id="colExpenses"></div>
+    <div class="col" id="colCashflow"></div>
+  </div>
 </section>
 
-<!-- SCREEN 2: EASY LAUNCH -->
+<!-- 2 BUSINESS -->
 <section class="screen" id="s2">
   <header><h1>Business <span class="tag">· Income &amp; Expenses</span></h1><div class="clock"></div></header>
-  <div class="bizgroups" id="bizRows"></div>
+  <div class="bizgrid" id="bizGrid"></div>
 </section>
 
-<!-- SCREEN: SAVINGS / INVESTMENTS -->
-<section class="screen" id="sSave">
-  <header><h1>Savings <span class="tag">· Toward the goal</span></h1><div class="clock"></div></header>
-  <div class="periods" id="savingsRows"></div>
-  <div class="headline" id="savingsNote"></div>
-</section>
-
-<!-- SCREEN 3: TASKS -->
+<!-- 3 SAVINGS -->
 <section class="screen" id="s3">
-  <header><h1>Today's Tasks</h1><div class="clock"></div></header>
+  <header><h1>Savings <span class="tag">· Toward the goal</span></h1><div class="clock"></div></header>
+  <div class="savegrid" id="saveGrid"></div>
+  <div class="savetotal" id="saveTotal"></div>
+</section>
+
+<!-- 4 TASKS -->
+<section class="screen" id="s4">
+  <header><h1>Tasks <span class="tag" id="taskCount"></span></h1><div class="clock"></div></header>
   <ul class="tasklist" id="taskRows"></ul>
 </section>
 
-<!-- SCREEN 4: CALENDAR -->
-<section class="screen" id="s4">
+<!-- 5 CALENDAR -->
+<section class="screen" id="s5">
   <header><h1 id="calTitle">Calendar</h1><div class="clock"></div></header>
   <div class="cal">
     <div><div class="grid" id="calGrid"></div></div>
@@ -303,178 +236,118 @@ const DATA = {
 <script>
 const $ = s => document.querySelector(s);
 const money = n => (n<0?"-$":"$") + Math.abs(n).toLocaleString("en-US",{maximumFractionDigits:0});
+const P = DATA.personal, V = DATA.buckets.variable, Fx = DATA.buckets.fixed;
 
-function periodCards(world, budgets){
-  return ["day","week","month"].map(p => {
-    const d = world[p], net = d.income - d.expenses;
-    const label = p==="day"?"Today":p==="week"?"This Week":"This Month";
-    let barHtml = "";
-    if (budgets){
-      const b = budgets[p], pct = Math.min(100, d.expenses/b*100);
-      const col = pct<70?"#3fb950":pct<100?"#d29922":"#f85149";
-      barHtml = `<div class="io" style="margin-top:1.4vh">${money(d.expenses)} of ${money(b)} budget</div>
-        <div class="bar" style="margin-top:.8vh"><div style="width:${pct}%;background:${col}"></div></div>`;
-    }
-    return `<div class="pcard">
-      <div class="plabel">${label}</div>
-      <div class="net ${net>=0?"good":"bad"}">${money(net)}</div>
-      <div class="io"><span class="in">+${money(d.income)}</span> &nbsp;·&nbsp; <span class="out">${money(d.expenses)}</span></div>
-      ${barHtml}
-    </div>`;
-  }).join("");
+/* ---- shared totals ---- */
+const incomeTotal = P.income.items.reduce((s,i)=>s+i.monthly,0);
+const varMonth = V.dining.spentWeek*4.33 + V.groceries.spentWeek*4.33 + V.shopping.spentMonth + V.gas.spentMonth + V.other.spentMonth;
+const cfNet = P.cashflow.monthIn - P.cashflow.monthOut;
+
+/* ---- SUMMARY ---- */
+const hr = new Date().getHours();
+$("#greet").textContent = hr<12?"Good morning":hr<18?"Good afternoon":"Good evening";
+$("#wandaMsg").textContent = DATA.wandaMessage||"";
+const dLeft = V.dining.budgetWeek - V.dining.spentWeek;
+const savingsTotal = DATA.savings.houseFund + DATA.savings.sofi + DATA.savings.robinhood + DATA.savings.ira;
+$("#sumGrid").innerHTML =
+  tile("Cash flow · month", (cfNet>=0?"+":"")+money(cfNet), cfNet>=0?"good":"bad", "bank in vs out") +
+  tile("Dining left · week", money(dLeft), dLeft>=0?"good":"bad", "of "+money(V.dining.budgetWeek)) +
+  tile("Savings + invest", money(savingsTotal), "", "toward the goal");
+function tile(lbl,big,cls,sub){ return `<div class="sumtile"><div class="lbl">${lbl}</div><div class="big ${cls}">${big}</div><div class="sub">${sub}</div></div>`; }
+$("#goalRow").innerHTML = DATA.goals.map(g=>`<div class="g"><div class="ge">${g.emoji}</div><div class="gl">${g.label}</div></div>`).join("");
+
+/* ---- PERSONAL: 3 columns ---- */
+// Column 1: Income
+$("#colIncome").innerHTML =
+  `<div class="ch">Income · month</div><div class="hero good">${money(incomeTotal)}</div><div class="herosub">money in</div>` +
+  P.income.items.map(i=>`<div class="line"><span class="lname">${i.label}</span><span class="lamt good">${money(i.monthly)}</span></div>`).join("");
+// Column 2: Expenses (fixed + variable)
+$("#colExpenses").innerHTML =
+  `<div class="ch">Expenses</div>` +
+  `<div class="line"><span class="lname">Fixed bills</span><span class="lamt">${money(Fx.spent)} / ${money(Fx.monthly)}</span></div>` +
+  bar(Fx.spent, Fx.monthly, "#8b6a3a") +
+  miniCat("Dining", V.dining.spentWeek, V.dining.budgetWeek) +
+  miniCat("Groceries", V.groceries.spentWeek, V.groceries.budgetWeek) +
+  miniCat("Shopping", V.shopping.spentMonth, V.shopping.budgetMonth) +
+  miniCat("Gas", V.gas.spentMonth, V.gas.typicalMonth, true) +
+  miniCat("Other", V.other.spentMonth, V.other.budgetMonth);
+// Column 3: Net cash flow
+$("#colCashflow").innerHTML =
+  `<div class="ch">Cash flow · month</div><div class="hero ${cfNet>=0?'good':'bad'}">${(cfNet>=0?"+":"")+money(cfNet)}</div><div class="herosub">bank money in − out</div>` +
+  `<div class="line"><span class="lname in">Money in</span><span class="lamt in">${money(P.cashflow.monthIn)}</span></div>` +
+  `<div class="line"><span class="lname out">Money out</span><span class="lamt out">${money(P.cashflow.monthOut)}</span></div>`;
+
+function bar(spent,target,col){ const p=target?Math.min(100,spent/target*100):0;
+  return `<div class="minibar"><div style="width:${p}%;background:${col}"></div></div>`; }
+function miniCat(name,spent,target,noCap){ const p=target?Math.min(100,spent/target*100):0;
+  const col=noCap?"#c98b8b":p<70?"#3fb950":p<100?"#d29922":"#f85149";
+  const right=noCap?money(spent):money(spent)+" / "+money(target);
+  return `<div class="mini"><div class="minirow"><span class="mininame">${name}</span><span class="miniamt">${right}</span></div>${bar(spent,target,col)}</div>`;
 }
 
-/* Personal screen — three buckets */
-function bucketBar(spent, target, opts){
-  opts = opts || {};
-  const pct = target ? Math.min(100, spent/target*100) : 0;
-  const col = opts.noCap ? "#d99a9a" : pct<70?"#3fb950":pct<100?"#d29922":"#f85149";
-  const right = opts.noCap ? money(spent) + " · ~" + money(target) + "/mo typical"
-                           : money(spent) + " of " + money(target);
-  return `<div class="bkt">
-    <div class="btop"><div class="bname">${opts.name}<span class="bsub">${opts.per||""}</span></div>
-      <div class="bval" style="color:${opts.noCap?'#fbe9e9':(target-spent>=0?'#3fb950':'#f85149')}">${right}</div></div>
-    <div class="bar"><div style="width:${pct}%;background:${col};height:100%;border-radius:99px"></div></div>
-  </div>`;
-}
-const V = DATA.buckets.variable, Fx = DATA.buckets.fixed;
-$("#bucketRows").innerHTML =
-  `<div class="bkt head"><div class="bname">Must-pay (fixed) · monthly</div></div>` +
-  `<div class="bkt"><div class="btop"><div class="bname">Fixed bills</div>
-     <div class="bval">${money(Fx.spent)} of ${money(Fx.monthly)}</div></div>
-     <div class="bar"><div style="width:${Math.min(100,Fx.spent/Fx.monthly*100)}%;background:#8b6a3a;height:100%;border-radius:99px"></div></div></div>` +
-  `<div class="bkt head"><div class="bname">Can-control (variable)</div></div>` +
-  bucketBar(V.dining.spentWeek, V.dining.budgetWeek, {name:"Dining / Takeout", per:"this week"}) +
-  bucketBar(V.groceries.spentWeek, V.groceries.budgetWeek, {name:"Groceries", per:"this week"}) +
-  bucketBar(V.shopping.spentMonth, V.shopping.budgetMonth, {name:"Shopping", per:"this month"}) +
-  bucketBar(V.gas.spentMonth, V.gas.typicalMonth, {name:"Gas", per:"this month", noCap:true}) +
-  bucketBar(V.other.spentMonth, V.other.budgetMonth, {name:"Other", per:"this month"});
-/* Personal cash flow headline */
-const cf = DATA.personal.cashflow;
-const cfNet = cf.monthIn - cf.monthOut;
-$("#cashflowRow").innerHTML =
-  `<div class="cfcard ${cfNet>=0?'cfgood':'cfbad'}">
-     <div class="cflabel">This month's cash flow</div>
-     <div class="cfnum">${cfNet>=0?'+':''}${money(cfNet)}</div>
-     <div class="cfsub"><span class="in">+${money(cf.monthIn)} in</span> · <span class="out">${money(cf.monthOut)} out</span></div>
-   </div>`;
-
-/* Business — two groups */
-function bizCard(g){
-  const net = g.month.income - g.month.expenses;
+/* ---- BUSINESS ---- */
+function bizCard(g){ const net=g.month.income-g.month.expenses;
   return `<div class="bizcard">
     <div class="bizname">${g.name}</div>
     <div class="biznet ${net>=0?'good':'bad'}">${net>=0?'+':''}${money(net)}</div>
-    <div class="io"><span class="in">+${money(g.month.income)}</span> &nbsp;·&nbsp; <span class="out">${money(g.month.expenses)}</span></div>
-    <div class="bizsub">this month</div>
+    <div class="bizIO"><div class="col2"><div class="k">Income</div><div class="in">${money(g.month.income)}</div></div>
+      <div class="col2"><div class="k">Expenses</div><div class="out">${money(g.month.expenses)}</div></div></div>
+    <div class="bizItems"><div class="line"><span class="lname">Net this month</span><span class="lamt ${net>=0?'good':'bad'}">${net>=0?'+':''}${money(net)}</span></div></div>
   </div>`;
 }
-$("#bizRows").innerHTML = bizCard(DATA.business.easylaunch) + bizCard(DATA.business.azramar);
+$("#bizGrid").innerHTML = bizCard(DATA.business.easylaunch) + bizCard(DATA.business.azramar);
 
-/* Recent transactions */
-function recentRows(list){
-  return list.map(t => {
-    const pos = t.amount >= 0;
-    const amt = (pos?"+":"") + money(t.amount);
-    return `<li><span class="rleft"><span class="rdate">${t.date}</span>${t.account}<span class="rnote">${t.note||""}</span></span>
-      <span class="ramt ${pos?"good":"bad"}">${amt}</span></li>`;
-  }).join("");
-}
-$("#recentPersonalRows").innerHTML = recentRows(DATA.recentPersonal || []);
+/* ---- SAVINGS ---- */
+const S = DATA.savings;
+$("#saveGrid").innerHTML =
+  saveCard("House Fund", S.houseFund, "down payment", "good") +
+  saveCard("Robinhood", S.robinhood, "investments", "") +
+  saveCard("Self-Directed IRA", S.ira, "retirement", "") +
+  saveCard("SoFi Savings", S.sofi, "emergency fund", "");
+function saveCard(name,val,note,cls){ return `<div class="savecard"><div class="sname">${name}</div><div class="sval ${cls}">${money(val)}</div><div class="snote">${note}</div></div>`; }
+$("#saveTotal").innerHTML = `Total saved &amp; invested: <b>${money(savingsTotal)}</b>`;
 
-/* Tasks — auto-shrink font as the list grows */
-const nTasks = DATA.tasks.length;
-const taskSize = nTasks <= 6 ? 4.2 : nTasks <= 9 ? 3.3 : nTasks <= 13 ? 2.7 : 2.2;
-document.documentElement.style.setProperty("--taskSize", taskSize + "vh");
-$("#taskRows").innerHTML = DATA.tasks.map(t =>
-  `<li class="${t.done?"done":""}"><span class="box">${t.done?"✓":""}</span>${t.text}</li>`).join("")
-  || "<li>No tasks yet — tell Wanda!</li>";
+/* ---- TASKS ---- */
+const nT = DATA.tasks.length;
+$("#taskCount").textContent = "· " + nT + " this week";
+const ts = nT<=6?4:nT<=9?3.3:nT<=13?2.7:2.2;
+document.documentElement.style.setProperty("--taskSize", ts+"vh");
+$("#taskRows").innerHTML = DATA.tasks.map(t=>`<li class="${t.done?'done':''}"><span class="box">${t.done?'✓':''}</span>${t.text}</li>`).join("") || "<li>No tasks yet</li>";
 
-/* Calendar */
-const now = new Date();
+/* ---- CALENDAR ---- */
+const now=new Date();
 $("#calTitle").textContent = now.toLocaleDateString("en-US",{month:"long",year:"numeric"});
 const y=now.getFullYear(), m=now.getMonth();
-const firstDow=new Date(y,m,1).getDay(), daysIn=new Date(y,m+1,0).getDate();
-const evDays=new Set(DATA.events.map(e=>e.date));
+const fd=new Date(y,m,1).getDay(), di=new Date(y,m+1,0).getDate();
+const ev=new Set(DATA.events.map(e=>e.date));
 let g=["S","M","T","W","T","F","S"].map(d=>`<div class="dow">${d}</div>`).join("");
-for(let i=0;i<firstDow;i++) g+=`<div></div>`;
-for(let d=1;d<=daysIn;d++){
-  const iso=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-  const cls=["day",d===now.getDate()?"today":"",evDays.has(iso)?"hasEvent":""].join(" ");
-  g+=`<div class="${cls}">${d}</div>`;
-}
+for(let i=0;i<fd;i++) g+=`<div></div>`;
+for(let d=1;d<=di;d++){ const iso=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+  g+=`<div class="day ${d===now.getDate()?'today':''} ${ev.has(iso)?'hasEvent':''}">${d}</div>`; }
 $("#calGrid").innerHTML=g;
-$("#eventRows").innerHTML=DATA.events.map(e=>{
-  const dt=new Date(e.date+"T00:00");
-  const when=dt.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})+(e.time?" · "+e.time:"");
-  return `<li><div class="when">${when}</div><div class="what">${e.title}</div></li>`;
-}).join("") || "<li><div class='what'>No upcoming events</div></li>";
+$("#eventRows").innerHTML=DATA.events.map(e=>{ const dt=new Date(e.date+"T00:00");
+  const w=dt.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})+(e.time?" · "+e.time:"");
+  return `<li><div class="when">${w}</div><div class="what">${e.title}</div></li>`; }).join("")||"<li><div class='what'>No events</div></li>";
 
 $("#upd").textContent = DATA.updated;
 
-/* Wanda summary screen */
-const hr = new Date().getHours();
-$("#greet").textContent = hr<12 ? "Good morning" : hr<18 ? "Good afternoon" : "Good evening";
-$("#wandaMsg").textContent = DATA.wandaMessage || "";
-$("#goalRows").innerHTML = (DATA.goals||[]).map(g =>
-  `<div class="goal"><div class="gemoji">${g.emoji}</div><div class="glabel">${g.label}</div><div class="gnote">${g.note}</div></div>`).join("");
-const wkNet = DATA.personal.week.income - DATA.personal.week.expenses;
-const dLeft = DATA.buckets.variable.dining.budgetWeek - DATA.buckets.variable.dining.spentWeek;
-$("#headline").innerHTML = `Dining budget left this week: <b>${money(dLeft)}</b>`;
-
-/* Savings screen */
-const S = DATA.savings;
-$("#savingsRows").innerHTML =
-  `<div class="pcard"><div class="plabel">House Fund</div><div class="net good">${money(S.houseFund)}</div><div class="io">toward the down payment</div></div>`+
-  `<div class="pcard"><div class="plabel">Robinhood</div><div class="net">${money(S.robinhood)}</div><div class="io">investments</div></div>`+
-  `<div class="pcard"><div class="plabel">SoFi Savings</div><div class="net">${money(S.sofi)}</div><div class="io">emergency fund</div></div>`;
-$("#savingsNote").innerHTML = "Every transfer is a brick in the house 🏡";
-
-/* Clock + cycling */
+/* ---- clock + cycling ---- */
 function tick(){ const t=new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
   document.querySelectorAll(".clock").forEach(c=>c.textContent=t); }
 tick(); setInterval(tick,15000);
-
-const screens=[$("#s0"),$("#s1"),$("#s2"),$("#sSave"),$("#s3"),$("#s4")], dots=document.querySelectorAll(".dots span");
+const screens=[$("#s0"),$("#s1"),$("#s2"),$("#s3"),$("#s4"),$("#s5")], dots=document.querySelectorAll(".dots span");
 let cur=0;
-function show(i){ cur=(i+screens.length)%screens.length;
-  screens.forEach((s,j)=>s.classList.toggle("active",j===cur));
-  dots.forEach((d,j)=>d.classList.toggle("on",j===cur)); }
+function show(i){ cur=(i+screens.length)%screens.length; screens.forEach((s,j)=>s.classList.toggle("active",j===cur)); dots.forEach((d,j)=>d.classList.toggle("on",j===cur)); }
 show(0);
-
-/* Auto-cycle, pausable */
-const CYCLE_MS = 18000, IDLE_MS = 10*60*1000;
-let autoTimer=null, idleTimer=null;
-function startAuto(){ if(autoTimer) return;
-  autoTimer=setInterval(()=>show(cur+1), CYCLE_MS); }
-function stopAuto(){ clearInterval(autoTimer); autoTimer=null; }
-function userActed(goto){
-  stopAuto();
-  if(typeof goto==="number") show(goto);
-  clearTimeout(idleTimer);
-  idleTimer=setTimeout(startAuto, IDLE_MS);   /* resume cycling after 10 min idle */
-}
+let auto=null, idle=null;
+function startAuto(){ if(!auto) auto=setInterval(()=>show(cur+1),18000); }
+function act(g){ clearInterval(auto); auto=null; if(typeof g==="number") show(g); clearTimeout(idle); idle=setTimeout(startAuto,600000); }
 startAuto();
-
-/* Dot taps */
-dots.forEach((d,i)=> d.addEventListener("click",()=>userActed(i)));
-
-/* Tap left/right half of screen to go prev/next */
-document.body.addEventListener("click", e=>{
-  if(e.target.closest(".dots")) return;           /* dots handled above */
-  const goNext = e.clientX > window.innerWidth/2;
-  userActed(cur + (goNext?1:-1));
-});
-
-/* Swipe (touch) */
+dots.forEach((d,i)=>d.addEventListener("click",()=>act(i)));
+document.body.addEventListener("click",e=>{ if(e.target.closest(".dots"))return; act(cur+(e.clientX>window.innerWidth/2?1:-1)); });
 let x0=null;
-document.body.addEventListener("touchstart", e=>{ x0=e.changedTouches[0].clientX; }, {passive:true});
-document.body.addEventListener("touchend", e=>{
-  if(x0===null) return;
-  const dx=e.changedTouches[0].clientX - x0;
-  if(Math.abs(dx)>50) userActed(cur + (dx<0?1:-1));   /* swipe left = next */
-  x0=null;
-}, {passive:true});
+document.body.addEventListener("touchstart",e=>{x0=e.changedTouches[0].clientX;},{passive:true});
+document.body.addEventListener("touchend",e=>{ if(x0===null)return; const dx=e.changedTouches[0].clientX-x0; if(Math.abs(dx)>50) act(cur+(dx<0?1:-1)); x0=null; },{passive:true});
 </script>
 </body>
 </html>
