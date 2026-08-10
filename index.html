@@ -14,7 +14,7 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Sun Aug 9, 2026 · 5:19 PM",
+  updated: "Sun Aug 9, 2026 · 6:00 PM",
 
   wandaMessage: "Every dollar you keep this week is a brick in the house you're building.",
 
@@ -28,32 +28,32 @@ const DATA = {
     // SECTION 1 — INCOME (money in)
     income: {
       items: [
-        { label: "Boeing (W2)", monthly: 0 },      // Wanda fills from Chase deposits
+        { label: "Boeing (W2)", monthly: 0 },
         { label: "Other", monthly: 0 }
       ]
     },
     // SECTION 2 — EXPENSES (fixed + variable)
     // cashflow: bank money in vs out (card payments count as out)
-    cashflow: { monthIn: 0, monthOut: 0 }
+    cashflow: { monthIn: 0, monthOut: 2335 }
   },
 
   business: {
-    easylaunch: { name: "Easy Launch Services", month: { income: 0, expenses: 0 } },
-    azramar:    { name: "AZ Ramar",             month: { income: 0, expenses: 0 } }
+    easylaunch: { name: "Easy Launch Services", month: { income: 1529.98, expenses: 1068.06 } },
+    azramar:    { name: "AZ Ramar",             month: { income: 0, expenses: 907.29 } }
   },
 
   buckets: {
     fixed: {
       monthly: 3600,
-      spent: 0,
+      spent: 2335,
       items: ["Rent", "Electric", "Internet", "Phone", "Insurance", "Student Loan"]
     },
     variable: {
-      dining:    { spentWeek: 0, budgetWeek: 175 },
-      groceries: { spentWeek: 0, budgetWeek: 150 },
-      shopping:  { spentMonth: 0, budgetMonth: 500 },
-      gas:       { spentMonth: 0, typicalMonth: 157 },
-      other:     { spentMonth: 0, budgetMonth: 150 }
+      dining:    { spentWeek: 170.75, budgetWeek: 175 },
+      groceries: { spentWeek: 208.8, budgetWeek: 150 },
+      shopping:  { spentMonth: 52.48, budgetMonth: 500 },
+      gas:       { spentMonth: 141.15, typicalMonth: 157 },
+      other:     { spentMonth: 58.37, budgetMonth: 150 }
     }
   },
 
@@ -62,7 +62,7 @@ const DATA = {
     houseFund: 0,
     sofi:      0,
     robinhood: 18763.48,
-    ira:       29420.05,   // Self-Directed IRA
+    ira:       29420.05,
     note: ""
   },
 
