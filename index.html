@@ -14,7 +14,7 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Sun Aug 9, 2026 · 5:19 PM",
+  updated: "Sun Aug 9, 2026 · 6:21 PM",
 
   wandaMessage: "Every dollar you keep this week is a brick in the house you're building.",
 
@@ -29,30 +29,33 @@ const DATA = {
     income: {
       week:  0,
       month: 0,
-      items: [ { label: "Boeing (W2)", monthly: 0 }, { label: "Other", monthly: 0 } ]
+      items: [
+        { label: "Boeing (W2)", monthly: 0 },
+        { label: "Other", monthly: 0 }
+      ]
     },
-    expenses: { week: 0, month: 0 },   // total spending (fixed+variable) — Wanda fills
-    cashflow: { weekIn: 0, weekOut: 0, monthIn: 0, monthOut: 0 }
+    expenses: { week: 0, month: 3106.97 },
+    cashflow: { weekIn: 0, weekOut: 0, monthIn: 0, monthOut: 2335 }
   },
 
   business: {
-    easylaunch: { name: "Easy Launch Services", month: { income: 0, expenses: 0 } },
-    azramar:    { name: "AZ Ramar",             month: { income: 0, expenses: 0 } }
+    easylaunch: { name: "Easy Launch Services", month: { income: 0, expenses: 1068.06 } },
+    azramar:    { name: "AZ Ramar",             month: { income: 0, expenses: 907.29 } }
   },
 
   buckets: {
     fixed: {
       weekly: 900, monthly: 3600,
-      spentWeek: 0, spentMonth: 0,
+      spentWeek: 0, spentMonth: 2335,
       items: ["Rent", "Electric", "Internet", "Phone", "Insurance", "Student Loan"]
     },
     // each category: spent + budget for BOTH week and month. gas has no cap (typical only).
     variable: {
-      dining:    { spentWeek: 0, budgetWeek: 175, spentMonth: 0, budgetMonth: 758 },
-      groceries: { spentWeek: 0, budgetWeek: 150, spentMonth: 0, budgetMonth: 650 },
-      shopping:  { spentWeek: 0, budgetWeek: 115, spentMonth: 0, budgetMonth: 500 },
-      gas:       { spentWeek: 0, budgetWeek: 0,   spentMonth: 0, budgetMonth: 0, noCap: true },
-      other:     { spentWeek: 0, budgetWeek: 35,  spentMonth: 0, budgetMonth: 150 }
+      dining:    { spentWeek: 0, budgetWeek: 175, spentMonth: 279.22, budgetMonth: 758 },
+      groceries: { spentWeek: 0, budgetWeek: 150, spentMonth: 240.75, budgetMonth: 650 },
+      shopping:  { spentWeek: 0, budgetWeek: 115, spentMonth: 52.48, budgetMonth: 500 },
+      gas:       { spentWeek: 0, budgetWeek: 0,   spentMonth: 141.15, budgetMonth: 0, noCap: true },
+      other:     { spentWeek: 0, budgetWeek: 35,  spentMonth: 58.37, budgetMonth: 150 }
     }
   },
 
@@ -61,22 +64,14 @@ const DATA = {
     houseFund: 0,
     sofi:      0,
     robinhood: 18763.48,
-    ira:       29420.05,   // Self-Directed IRA
+    ira:       29420.05,
     note: ""
   },
 
   tasks: {
-    day: [
-      { text: "Example — pick up groceries", done: false },
-      { text: "Example — call Midway cleaning", done: true }
-    ],
-    week: [
-      { text: "Example — pay Wells Fargo", done: false },
-      { text: "Example — schedule cleaner", done: true }
-    ],
-    month: [
-      { text: "Example — renew insurance", done: false }
-    ]
+    day: [],
+    week: [],
+    month: []
   },
 
   events: [
