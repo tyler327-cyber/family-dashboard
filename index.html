@@ -15,7 +15,7 @@
    Do not touch anything below END WANDA DATA.
    ========================================================== */
 const DATA = {
-  updated: "Sun Aug 9, 2026 · 4:47 PM",
+  updated: "Sun Aug 9, 2026 · 4:14 PM",
 
   // Wanda writes this fresh each morning — tie it to the week's numbers + the goals below
   wandaMessage: "Every dollar you keep this week is a brick in the house you're building. You're closer than yesterday — keep going.",
@@ -28,66 +28,60 @@ const DATA = {
   ],
 
   personal: {
-    day:   { income: 0, expenses: 0 },
-    week:  { income: 0, expenses: 2908.18 },
-    month: { income: 0, expenses: 3106.97 }
-  },
-
-  easylaunch: {
+    // Cash flow = money into bank - money out (card payments count as outflow).
+    // Transfers in from own savings/Robinhood/SoFi do NOT count as income.
+    cashflow: { monthIn: 0, monthOut: 0 },   // Wanda fills from Chase bank lines
     day:   { income: 0, expenses: 0 },
     week:  { income: 0, expenses: 0 },
     month: { income: 0, expenses: 0 }
   },
 
-  personalBudget: {       // legacy fallback; buckets drive the Personal screen now
-    day:   71.43,
-    week:  500.00,
-    month: 2000.00
+  // BUSINESS — two separate account groups, each income + expenses
+  business: {
+    easylaunch: {
+      name: "Easy Launch Services",
+      month: { income: 0, expenses: 0 }
+    },
+    azramar: {
+      name: "AZ Ramar",
+      month: { income: 0, expenses: 0 }
+    }
   },
 
   // THREE BUCKETS — Wanda fills spent from the sheet; targets are set below.
   // Variable categories each show spent vs weekly/monthly budget.
   buckets: {
     fixed: {           // must-pay, monthly. Wanda sums the recurring bills.
-      spent: 2335,
-      monthly: 3600,
-      items: [
-        { name: "Rent", amount: 2275 },
-        { name: "Electric", amount: 0 },
-        { name: "Internet", amount: 60 },
-        { name: "Phone", amount: 0 },
-        { name: "Auto Insurance", amount: 0 },
-        { name: "Student Loan", amount: 0 }
-      ]
+      spent: 0,
+      monthly: 3600,   // approx total of rent+utilities+insurance+phone+loan (Wanda refines)
+      items: ["Rent", "Electric", "Internet", "Phone", "Auto Insurance (Progressive)", "Student Loan"]
     },
     variable: {        // can-control. each: spent this period vs budget
-      dining:      { spentWeek: 170.75, budgetWeek: 175 },
-      groceries:   { spentWeek: 208.8, budgetWeek: 150 },
-      shopping:    { spentMonth: 52.48, budgetMonth: 500 },
-      gas:         { spentMonth: 141.15, typicalMonth: 157 },
-      other:       { spentMonth: 58.37, budgetMonth: 150 }
+      dining:      { spentWeek: 0, budgetWeek: 175 },
+      groceries:   { spentWeek: 0, budgetWeek: 150 },
+      shopping:    { spentMonth: 0, budgetMonth: 500 },
+      gas:         { spentMonth: 0, typicalMonth: 157 },   // varies — running total, no cap
+      other:       { spentMonth: 0, budgetMonth: 150 }     // entertainment + misc
     }
   },
 
-  // Savings / investments — Tyler updates balances manually.
+  // Savings / investments — Tyler updates these manually
   savings: {
-    robinhood: 0,
-    sofi:      0,
-    houseFund: 0,
-    transferIn: 595.98,
-    transferOut: 0,
-    note: "Manual balances; transfers are not spending"
+    robinhood: 0,      // "I'll tell Wanda the number I see"
+    sofi:      0,      // savings, currently 0
+    houseFund: 0,      // toward the down payment
+    note: "Update these by telling Wanda the latest balances"
   },
 
   // Last few transactions per world (newest first) — Wanda keeps ~5 each, fills the lower screen
   recentPersonal: [
-    { date: "Aug 7", account: "Amex 83007", amount: -11.74, note: "TST* BALLAST POINT LLONG BEACH CA" },
-    { date: "Aug 7", account: "Amex 83007", amount: -21.65, note: "SUBWAY 22692-0 22692TUSTIN CA" },
-    { date: "Aug 7", account: "Amex 83007", amount: -81.82, note: "SHELL SERVICE STATIOTUSTIN CA" },
-    { date: "Aug 7", account: "Amex 83007", amount: -11.04, note: "PAVILIONS #2203 2203LONG BEACH CA" },
-    { date: "Aug 7", account: "Amex 83007", amount: -10, note: "IN-N-OUT LONG BEACH LONG BEACH CA" }
+    { date: "Aug 9", account: "Chase Sapphire 1234", amount: -84.20, note: "Groceries" },
+    { date: "Aug 9", account: "Wells Fargo 5678",    amount: -52.00, note: "Gas" },
+    { date: "Aug 6", account: "Boeing",              amount: 2814.65, note: "Paycheck" }
   ],
   recentEasy: [
+    { date: "Aug 5", account: "Airbnb payout", amount: 595.96, note: "STR payout" },
+    { date: "Aug 8", account: "Amex Biz 71004", amount: -80.00, note: "Cleaning" }
   ],
 
   tasks: [
@@ -119,6 +113,23 @@ const DATA = {
     transition:opacity 1.2s ease; pointer-events:none; display:flex; flex-direction:column; }
   .screen.active { opacity:1; pointer-events:auto; }
   header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3vh; }
+  .cashflow { margin-bottom:2vh; }
+  .cfcard { border-radius:16px; padding:2.4vh 2.8vh; border:1px solid #4a1a1f; background:#2a0d10; }
+  .cfcard.cfgood { box-shadow:0 0 30px rgba(63,185,80,.12) inset; }
+  .cfcard.cfbad { box-shadow:0 0 30px rgba(248,81,73,.14) inset; }
+  .cflabel { font-size:2.2vh; color:#d99a9a; text-transform:uppercase; letter-spacing:.08em; }
+  .cfnum { font-size:6vh; font-weight:700; font-variant-numeric:tabular-nums; line-height:1.1; }
+  .cfgood .cfnum { color:#3fb950; } .cfbad .cfnum { color:#f85149; }
+  .cfsub { font-size:2.2vh; color:#d99a9a; margin-top:.4vh; }
+  .cfsub .in { color:#3fb950; } .cfsub .out { color:#f85149; }
+  .bizgroups { display:grid; grid-template-columns:repeat(2,1fr); gap:3vh; flex:1; min-height:0; align-content:center; }
+  .bizcard { background:#2a0d10; border:1px solid #4a1a1f; border-radius:20px; padding:4vh; text-align:center; }
+  .bizname { font-size:3.2vh; font-weight:600; color:#ff7a8a; }
+  .biznet { font-size:7vh; font-weight:700; font-variant-numeric:tabular-nums; margin:1.5vh 0; }
+  .bizcard .io { font-size:2.6vh; }
+  .bizcard .io .in { color:#3fb950; } .bizcard .io .out { color:#f85149; }
+  .bizsub { font-size:2.1vh; color:#d99a9a; margin-top:1vh; text-transform:uppercase; letter-spacing:.06em; }
+
   .buckets { display:flex; flex-direction:column; gap:2vh; flex:1; min-height:0; }
   .bkt { background:#2a0d10; border:1px solid #4a1a1f; border-radius:16px; padding:2.2vh 2.8vh; }
   .bkt .btop { display:flex; justify-content:space-between; align-items:baseline; }
@@ -219,19 +230,15 @@ const DATA = {
 <!-- SCREEN 1: PERSONAL -->
 <section class="screen" id="s1">
   <header><h1>Personal <span class="tag">· Money</span></h1><div class="clock"></div></header>
+  <div class="cashflow" id="cashflowRow"></div>
   <div class="buckets" id="bucketRows"></div>
   <div class="recent recent-sm"><ul id="recentPersonalRows"></ul></div>
 </section>
 
 <!-- SCREEN 2: EASY LAUNCH -->
 <section class="screen" id="s2">
-  <header><h1>Easy Launch <span class="tag">· Services</span></h1><div class="clock"></div></header>
-  <div class="periods" id="pEasy"></div>
-  <div class="budget">
-    <div class="blabel">Month net · business</div>
-    <div class="bnum" id="easyNet"></div>
-  </div>
-  <div class="recent recent-sm"><ul id="recentEasyRows"></ul></div>
+  <header><h1>Business <span class="tag">· Income &amp; Expenses</span></h1><div class="clock"></div></header>
+  <div class="bizgroups" id="bizRows"></div>
 </section>
 
 <!-- SCREEN: SAVINGS / INVESTMENTS -->
@@ -308,12 +315,27 @@ $("#bucketRows").innerHTML =
   bucketBar(V.shopping.spentMonth, V.shopping.budgetMonth, {name:"Shopping", per:"this month"}) +
   bucketBar(V.gas.spentMonth, V.gas.typicalMonth, {name:"Gas", per:"this month", noCap:true}) +
   bucketBar(V.other.spentMonth, V.other.budgetMonth, {name:"Other", per:"this month"});
-$("#pEasy").innerHTML = periodCards(DATA.easylaunch, null);
+/* Personal cash flow headline */
+const cf = DATA.personal.cashflow;
+const cfNet = cf.monthIn - cf.monthOut;
+$("#cashflowRow").innerHTML =
+  `<div class="cfcard ${cfNet>=0?'cfgood':'cfbad'}">
+     <div class="cflabel">This month's cash flow</div>
+     <div class="cfnum">${cfNet>=0?'+':''}${money(cfNet)}</div>
+     <div class="cfsub"><span class="in">+${money(cf.monthIn)} in</span> · <span class="out">${money(cf.monthOut)} out</span></div>
+   </div>`;
 
-/* Easy Launch month net */
-const eNet = DATA.easylaunch.month.income - DATA.easylaunch.month.expenses;
-$("#easyNet").textContent = money(eNet);
-$("#easyNet").className = "bnum " + (eNet>=0?"good":"bad");
+/* Business — two groups */
+function bizCard(g){
+  const net = g.month.income - g.month.expenses;
+  return `<div class="bizcard">
+    <div class="bizname">${g.name}</div>
+    <div class="biznet ${net>=0?'good':'bad'}">${net>=0?'+':''}${money(net)}</div>
+    <div class="io"><span class="in">+${money(g.month.income)}</span> &nbsp;·&nbsp; <span class="out">${money(g.month.expenses)}</span></div>
+    <div class="bizsub">this month</div>
+  </div>`;
+}
+$("#bizRows").innerHTML = bizCard(DATA.business.easylaunch) + bizCard(DATA.business.azramar);
 
 /* Recent transactions */
 function recentRows(list){
@@ -325,7 +347,6 @@ function recentRows(list){
   }).join("");
 }
 $("#recentPersonalRows").innerHTML = recentRows(DATA.recentPersonal || []);
-$("#recentEasyRows").innerHTML = recentRows(DATA.recentEasy || []);
 
 /* Tasks — auto-shrink font as the list grows */
 const nTasks = DATA.tasks.length;
