@@ -15,7 +15,7 @@
    Do not touch anything below END WANDA DATA.
    ========================================================== */
 const DATA = {
-  updated: "Sun Aug 9, 2026 · 4:14 PM",
+  updated: "Sun Aug 9, 2026 · 5:19 PM",
 
   // Wanda writes this fresh each morning — tie it to the week's numbers + the goals below
   wandaMessage: "Every dollar you keep this week is a brick in the house you're building. You're closer than yesterday — keep going.",
@@ -28,60 +28,82 @@ const DATA = {
   ],
 
   personal: {
-    // Cash flow = money into bank - money out (card payments count as outflow).
-    // Transfers in from own savings/Robinhood/SoFi do NOT count as income.
-    cashflow: { monthIn: 0, monthOut: 0 },   // Wanda fills from Chase bank lines
     day:   { income: 0, expenses: 0 },
-    week:  { income: 0, expenses: 0 },
-    month: { income: 0, expenses: 0 }
+    week:  { income: 0, expenses: 2335 },
+    month: { income: 0, expenses: 2335 }
   },
 
-  // BUSINESS — two separate account groups, each income + expenses
-  business: {
-    easylaunch: {
-      name: "Easy Launch Services",
-      month: { income: 0, expenses: 0 }
-    },
-    azramar: {
-      name: "AZ Ramar",
-      month: { income: 0, expenses: 0 }
-    }
+  easylaunch: {
+    day:   { income: 0, expenses: 0 },
+    week:  { income: 1529.98, expenses: 8468.12 },
+    month: { income: 1529.98, expenses: 8468.12 }
   },
 
-  // THREE BUCKETS — Wanda fills spent from the sheet; targets are set below.
-  // Variable categories each show spent vs weekly/monthly budget.
+  personalBudget: {
+    day:   71.43,
+    week:  500.00,
+    month: 2000.00
+  },
+
+  // Personal cash flow uses bank lines; category buckets use card charges only.
+  cashflow: {
+    monthIn: 0,
+    monthOut: 2335,
+    monthNet: -2335,
+    note: "Bank cash flow: card payments count as outflow; own savings transfers do not count as income."
+  },
+
+  // THREE BUCKETS — fixed from bank expenses; variable from Amex card charges only.
   buckets: {
-    fixed: {           // must-pay, monthly. Wanda sums the recurring bills.
-      spent: 0,
-      monthly: 3600,   // approx total of rent+utilities+insurance+phone+loan (Wanda refines)
-      items: ["Rent", "Electric", "Internet", "Phone", "Auto Insurance (Progressive)", "Student Loan"]
+    fixed: {
+      spent: 2335,
+      monthly: 3600,
+      items: [
+        { name: "Rent", amount: 2275 },
+        { name: "Electric", amount: 0 },
+        { name: "Internet", amount: 60 },
+        { name: "Phone", amount: 0 },
+        { name: "Auto Insurance", amount: 0 },
+        { name: "Student Loan", amount: 0 }
+      ]
     },
-    variable: {        // can-control. each: spent this period vs budget
-      dining:      { spentWeek: 0, budgetWeek: 175 },
-      groceries:   { spentWeek: 0, budgetWeek: 150 },
-      shopping:    { spentMonth: 0, budgetMonth: 500 },
-      gas:         { spentMonth: 0, typicalMonth: 157 },   // varies — running total, no cap
-      other:       { spentMonth: 0, budgetMonth: 150 }     // entertainment + misc
+    variable: {
+      dining:      { spentWeek: 170.75, spentMonth: 279.22, budgetWeek: 175 },
+      groceries:   { spentWeek: 208.8, spentMonth: 240.75, budgetWeek: 150 },
+      shopping:    { spentMonth: 52.48, budgetMonth: 500 },
+      gas:         { spentMonth: 141.15, typicalMonth: 157 },
+      other:       { spentMonth: 58.37, budgetMonth: 150 }
     }
   },
 
-  // Savings / investments — Tyler updates these manually
+  business: {
+    easylaunch: { name: "Easy Launch Services", month: { income: 1529.98, expenses: 8468.12 }, net: -6938.14 },
+    azramar:    { name: "AZ Ramar", month: { income: 0, expenses: 907.29 }, net: -907.29 }
+  },
+
+  // Savings / investments — Tyler updates balances manually.
   savings: {
-    robinhood: 0,      // "I'll tell Wanda the number I see"
-    sofi:      0,      // savings, currently 0
-    houseFund: 0,      // toward the down payment
-    note: "Update these by telling Wanda the latest balances"
+    robinhood: 0,
+    sofi:      0,
+    houseFund: 0,
+    transferIn: 595.98,
+    transferOut: 0,
+    note: "Manual balances; transfers are not spending or income."
   },
 
   // Last few transactions per world (newest first) — Wanda keeps ~5 each, fills the lower screen
   recentPersonal: [
-    { date: "Aug 9", account: "Chase Sapphire 1234", amount: -84.20, note: "Groceries" },
-    { date: "Aug 9", account: "Wells Fargo 5678",    amount: -52.00, note: "Gas" },
-    { date: "Aug 6", account: "Boeing",              amount: 2814.65, note: "Paycheck" }
+    { date: "Aug 7", account: "Amex 83007", amount: -11.74, note: "TST* BALLAST POINT LLONG BEACH CA" },
+    { date: "Aug 7", account: "Amex 83007", amount: -21.65, note: "SUBWAY 22692-0 22692TUSTIN CA" },
+    { date: "Aug 7", account: "Amex 83007", amount: -81.82, note: "SHELL SERVICE STATIOTUSTIN CA" },
+    { date: "Aug 7", account: "Amex 83007", amount: -11.04, note: "PAVILIONS #2203 2203LONG BEACH CA" },
+    { date: "Aug 7", account: "Amex 83007", amount: -10, note: "IN-N-OUT LONG BEACH LONG BEACH CA" }
   ],
   recentEasy: [
-    { date: "Aug 5", account: "Airbnb payout", amount: 595.96, note: "STR payout" },
-    { date: "Aug 8", account: "Amex Biz 71004", amount: -80.00, note: "Cleaning" }
+    { date: "Aug 7", account: "Chase 3235", amount: 26.57, note: "Airbnb · Easy Launch Services" },
+    { date: "Aug 4", account: "Chase 3235", amount: 70.07, note: "Airbnb · Easy Launch Services" },
+    { date: "Aug 4", account: "Chase 3235", amount: 1433.34, note: "Airbnb · Easy Launch Services" },
+    { date: "Aug 3", account: "Chase 1969", amount: -907.29, note: "Mortgage · AZ Ramar" }
   ],
 
   tasks: [
