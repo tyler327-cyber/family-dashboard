@@ -1,0 +1,7 @@
+{
+  "name": "family-dashboard",
+  "private": true,
+  "scripts": {
+    "test": "node tests/dashboard-smoke.mjs"
+  }
+}

@@ -18,10 +18,38 @@ const DATA = {
 
   wandaMessage: "Every dollar you keep this week is a brick in the house you're building.",
 
+  owners: {
+    tyler:     { label: "Tyler",     short: "T",    color: "#4da3ff" },
+    priscilla: { label: "Priscilla", short: "P",    color: "#d77ac8" },
+    both:      { label: "Both",      short: "Both", color: "#4fbd73" },
+    unassigned:{ label: "Unassigned",short: "—",    color: "#8b7b7d" }
+  },
+
+  // A goal is the outcome. A project is a multi-step path toward that outcome.
+  // A task is one concrete action. Routines are repeating household work.
   goals: [
-    { emoji: "🏡", label: "Our house", note: "down payment" },
-    { emoji: "👶", label: "Family", note: "stable foundation" },
-    { emoji: "💳", label: "Debt-free", note: "one payment at a time" }
+    { id: "home", emoji: "🏡", label: "Buy a home", owner: "both", stage: "Foundation",
+      note: "Build a mortgage-ready financial foundation.", next: "Define the house-fund target and monthly contribution.", featured: true },
+    { id: "family", emoji: "👶", label: "Start a family", owner: "both", stage: "Foundation",
+      note: "Create a stable home, schedule, and income base.", next: "Keep strengthening savings and shared routines.", featured: true },
+    { id: "freedom", emoji: "🕊️", label: "Leave the 9–5", owner: "both", stage: "Building",
+      note: "Grow dependable business and flexible income.", next: "Track which income experiments gain real customers.", featured: true },
+    { id: "priscilla-career", emoji: "🌱", label: "Find fulfilling work", owner: "priscilla", stage: "Exploring",
+      note: "Find work that fits Priscilla's strengths, schedule, and income needs.", next: "Discuss preferences, constraints, and one small opportunity to test." },
+    { id: "elsai-product", emoji: "🤖", label: "Build Elsai into a service", owner: "tyler", stage: "Testing",
+      note: "Make host operations reliable, secure, and repeatable.", next: "Finish isolated host-bubble and onboarding tests." },
+    { id: "agent-business", emoji: "🚀", label: "Launch a monetizable agent", owner: "tyler", stage: "Validating",
+      note: "Turn a useful agent workflow into recurring revenue.", next: "Validate one painful workflow with a real business user." }
+  ],
+
+  projects: [
+    { id: "family-finances", label: "Family financial plan", owner: "both", goal: "home", status: "Active" },
+    { id: "sell-prius", label: "Sell the Toyota Prius", owner: "both", goal: "home", status: "Active" },
+    { id: "career-discovery", label: "Priscilla career discovery", owner: "priscilla", goal: "priscilla-career", status: "Next" },
+    { id: "elsai-pilot", label: "Elsai host pilot", owner: "tyler", goal: "elsai-product", status: "Active" },
+    { id: "agent-validation", label: "Agent product discovery", owner: "tyler", goal: "agent-business", status: "Active" },
+    { id: "easy-launch", label: "Easy Launch Services", owner: "both", goal: "freedom", status: "Active" },
+    { id: "fast-lane", label: "Fast Lane Capital", owner: "tyler", goal: "freedom", status: "Exploring" }
   ],
 
   personal: {
@@ -71,15 +99,15 @@ const DATA = {
   tasks: {
     day: [],
     week: [
-      { text: "Clean home", done: false },
-      { text: "Study real estate", done: false },
-      { text: "Call AZ Tamer for TPT license", done: false },
-      { text: "Get the Toyota Prius detailed inside and outside", done: false }
+      { text: "Clean home", owner: "both", type: "routine", done: false },
+      { text: "Study real estate", owner: "tyler", type: "task", goal: "home", done: false },
+      { text: "Call AZ Tamer for TPT license", owner: "tyler", type: "task", project: "easy-launch", done: false },
+      { text: "Get the Toyota Prius detailed inside and outside", owner: "both", type: "task", project: "sell-prius", done: false }
     ],
     month: [
-      { text: "Sell the Toyota Prius", done: false },
-      { text: "Take pictures of the Toyota Prius", done: false },
-      { text: "Post the Toyota Prius on OfferUp and Facebook", done: false }
+      { text: "Sell the Toyota Prius", owner: "both", type: "milestone", project: "sell-prius", done: false },
+      { text: "Take pictures of the Toyota Prius", owner: "both", type: "task", project: "sell-prius", done: false },
+      { text: "Post the Toyota Prius on OfferUp and Facebook", owner: "both", type: "task", project: "sell-prius", done: false }
     ]
   },
 
@@ -127,6 +155,24 @@ const DATA = {
   .goalrow .g { flex:1; text-align:center; background:#2a0d10; border:1px solid #4a1a1f; border-radius:16px; padding:1.8vh; }
   .goalrow .ge { font-size:3vh; } .goalrow .gl { font-size:2.2vh; color:#ff7a8a; font-weight:600; margin-top:.4vh; }
   .goalrow .gn { font-size:1.9vh; color:#c98b8b; margin-top:.3vh; }
+
+  /* GOALS + PROJECTS */
+  .ownerlegend { display:flex; align-items:center; gap:1.1vw; font-size:1.8vh; color:#c98b8b; }
+  .ownerkey { display:inline-flex; align-items:center; gap:.45vw; white-space:nowrap; }
+  .ownerkey::before { content:""; width:1.5vh; height:1.5vh; border-radius:50%; background:var(--owner); }
+  .goalgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:2.2vw; flex:1; min-height:0; }
+  .goallane { background:#2a0d10; border:1px solid #4a1a1f; border-top:.55vh solid var(--owner); border-radius:18px; padding:2.3vh; overflow:hidden; }
+  .goallanehead { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2vh; }
+  .goallanetitle { font-size:2.7vh; font-weight:700; color:var(--owner); }
+  .goalcount { font-size:1.8vh; color:#c98b8b; }
+  .goalcard { background:#351217; border:1px solid #4a1a1f; border-radius:14px; padding:1.4vh 1.3vw; margin-bottom:1.15vh; }
+  .goalname { display:flex; gap:.65vw; align-items:center; font-size:2.2vh; font-weight:650; }
+  .goalstage { margin-left:auto; font-size:1.45vh; color:var(--owner); border:1px solid color-mix(in srgb, var(--owner) 55%, transparent); border-radius:99px; padding:.25vh .55vw; text-transform:uppercase; letter-spacing:.05em; }
+  .goalnote { color:#d7bfc1; font-size:1.7vh; line-height:1.3; margin:.65vh 0; }
+  .goalnext { font-size:1.65vh; line-height:1.3; color:#f3dedf; }
+  .goalnext b { color:var(--owner); font-weight:600; }
+  .projectchips { display:flex; flex-wrap:wrap; gap:.45vh .4vw; margin-top:.75vh; }
+  .projectchip { background:#451820; color:#d8b9bc; border-radius:99px; padding:.3vh .6vw; font-size:1.45vh; }
 
   /* PERSONAL — three columns */
   /* PERSONAL — 2 blocks top, wide expenses bottom */
@@ -177,6 +223,12 @@ const DATA = {
   .tgbar { height:1.4vh; background:#3a1418; border-radius:99px; overflow:hidden; margin:1.2vh 0 2vh; }
   .tgbar > div { height:100%; background:#3fb950; border-radius:99px; }
   .tgitems { list-style:none; } .tgitems li { display:flex; align-items:center; gap:1vw; font-size:2.6vh; padding:1vh 0; }
+  .taskcopy { min-width:0; }
+  .tasktext { line-height:1.2; }
+  .taskmeta { display:flex; align-items:center; flex-wrap:wrap; gap:.45vw; margin-top:.35vh; color:#9f7d80; font-size:1.55vh; text-decoration:none; }
+  .ownerbadge { display:inline-flex; align-items:center; justify-content:center; min-width:2.7vh; height:2.7vh; padding:0 .5vw;
+    border:1px solid var(--owner); border-radius:99px; color:var(--owner); font-size:1.45vh; font-weight:750; text-decoration:none; flex:0 0 auto; }
+  .typebadge { text-transform:capitalize; }
   .tbox { width:3vh; height:3vh; border:.3vh solid #5a2428; border-radius:.7vh; flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-size:2vh; }
   .tgitems .done { color:#7a4a4d; text-decoration:line-through; } .tgitems .done .tbox { border-color:#238636; color:#3fb950; }
   .tgempty { color:#7a4a4d; font-size:2.3vh; margin-top:1vh; }
@@ -246,14 +298,21 @@ const DATA = {
   <div class="savetotal" id="saveTotal"></div>
 </section>
 
-<!-- 4 TASKS -->
+<!-- 4 GOALS -->
 <section class="screen" id="s4">
+  <header><h1>Goals <span class="tag">· Progress &amp; next steps</span></h1><div class="ownerlegend" id="goalLegend"></div><div class="clock"></div></header>
+  <div class="goalgrid" id="goalGrid"></div>
+</section>
+
+<!-- 5 TASKS -->
+<section class="screen" id="s5">
   <header><h1>Tasks <span class="tag" id="taskCount"></span></h1><div class="clock"></div></header>
+  <div class="ownerlegend" id="taskLegend" style="margin:-1.2vh 0 1.2vh"></div>
   <div class="taskgroups" id="taskGroups"></div>
 </section>
 
-<!-- 5 CALENDAR -->
-<section class="screen" id="s5">
+<!-- 6 CALENDAR -->
+<section class="screen" id="s6">
   <header><h1 id="calTitle">Calendar</h1><div class="clock"></div></header>
   <div class="cal">
     <div><div class="grid" id="calGrid"></div></div>
@@ -264,7 +323,7 @@ const DATA = {
   </div>
 </section>
 
-<div class="dots"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+<div class="dots"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
 <div class="updated">Updated <span id="upd"></span></div>
 
 <script>
@@ -287,7 +346,7 @@ $("#sumGrid").innerHTML =
   tile("Dining left · week", money(dLeft), dLeft>=0?"good":"bad", "of "+money(V.dining.budgetWeek)) +
   tile("Savings + invest", money(savingsTotal), "", "toward the goal");
 function tile(lbl,big,cls,sub){ return `<div class="sumtile"><div class="lbl">${lbl}</div><div class="big ${cls}">${big}</div><div class="sub">${sub}</div></div>`; }
-$("#goalRow").innerHTML = DATA.goals.map(g=>`<div class="g"><div class="ge">${g.emoji}</div><div class="gl">${g.label}</div><div class="gn">${g.note||""}</div></div>`).join("");
+$("#goalRow").innerHTML = DATA.goals.filter(g=>g.featured).slice(0,3).map(g=>`<div class="g"><div class="ge">${g.emoji}</div><div class="gl">${g.label}</div><div class="gn">${g.stage||""}</div></div>`).join("");
 
 /* ---- PERSONAL ---- */
 // Top-left: Income
@@ -350,6 +409,27 @@ $("#saveGrid").innerHTML =
 function saveCard(name,val,note,cls){ return `<div class="savecard"><div class="sname">${name}</div><div class="sval ${cls}">${money(val)}</div><div class="snote">${note}</div></div>`; }
 $("#saveTotal").innerHTML = `Total saved &amp; invested: <b>${money(savingsTotal)}</b>`;
 
+/* ---- GOALS: outcomes, active projects, and next steps by owner ---- */
+const ownerOrder = ["both", "tyler", "priscilla"];
+const owner = key => DATA.owners[key] || DATA.owners.unassigned;
+const project = id => DATA.projects.find(p=>p.id===id);
+const goal = id => DATA.goals.find(g=>g.id===id);
+function legend(){ return ownerOrder.map(key=>`<span class="ownerkey" style="--owner:${owner(key).color}">${owner(key).label}</span>`).join(""); }
+$("#goalLegend").innerHTML = legend();
+$("#taskLegend").innerHTML = legend();
+function goalLane(key){
+  const who=owner(key), goals=DATA.goals.filter(g=>g.owner===key);
+  return `<div class="goallane" style="--owner:${who.color}">
+    <div class="goallanehead"><div class="goallanetitle">${who.label}</div><div class="goalcount">${goals.length} goal${goals.length===1?'':'s'}</div></div>
+    ${goals.map(g=>{ const active=DATA.projects.filter(p=>p.goal===g.id && p.status!=="Done"); return `<div class="goalcard">
+      <div class="goalname"><span>${g.emoji}</span><span>${g.label}</span><span class="goalstage">${g.stage}</span></div>
+      <div class="goalnote">${g.note}</div><div class="goalnext"><b>Next:</b> ${g.next}</div>
+      ${active.length?`<div class="projectchips">${active.map(p=>`<span class="projectchip">${p.label}</span>`).join("")}</div>`:""}
+    </div>`;}).join("")}
+  </div>`;
+}
+$("#goalGrid").innerHTML = ownerOrder.map(goalLane).join("");
+
 /* ---- TASKS: grouped day/week/month with % ---- */
 const allTasks = [...(DATA.tasks.day||[]), ...(DATA.tasks.week||[]), ...(DATA.tasks.month||[])];
 $("#taskCount").textContent = "· " + allTasks.filter(t=>!t.done).length + " open";
@@ -360,8 +440,15 @@ function taskGroup(title, list){
   return `<div class="tgroup">
     <div class="tgtitle">${title}<span class="tgpct ${pct===100?'good':''}">${pct}%</span></div>
     <div class="tgbar"><div style="width:${pct}%"></div></div>
-    <ul class="tgitems">${list.map(t=>`<li class="${t.done?'done':''}"><span class="tbox">${t.done?'✓':''}</span>${t.text}</li>`).join("")}</ul>
+    <ul class="tgitems">${list.map(taskRow).join("")}</ul>
   </div>`;
+}
+function taskRow(t){
+  const who=owner(t.owner), linkedProject=project(t.project), linkedGoal=goal(t.goal || linkedProject?.goal);
+  const context=linkedProject?.label || linkedGoal?.label || "";
+  return `<li class="${t.done?'done':''}"><span class="tbox">${t.done?'✓':''}</span>
+    <span class="ownerbadge" style="--owner:${who.color}" title="${who.label}">${who.short}</span>
+    <span class="taskcopy"><span class="tasktext">${t.text}</span><span class="taskmeta"><span class="typebadge">${t.type||'task'}</span>${context?`<span>· ${context}</span>`:""}</span></span></li>`;
 }
 $("#taskGroups").innerHTML =
   taskGroup("Today", DATA.tasks.day) +
@@ -385,7 +472,7 @@ $("#eventRows").innerHTML=DATA.events.map(e=>{ const dt=new Date(e.date+"T00:00"
 /* week tasks on calendar */
 const wkTasks = DATA.tasks.week||[];
 $("#calTaskRows").innerHTML = wkTasks.length
-  ? wkTasks.map(t=>`<li class="${t.done?'done':''}" style="list-style:none;display:flex;align-items:center;gap:1vw;font-size:2.4vh;padding:.7vh 0"><span class="tbox">${t.done?'✓':''}</span>${t.text}</li>`).join("")
+  ? wkTasks.map(t=>taskRow(t).replace('<li ', '<li style="list-style:none;display:flex;align-items:center;gap:1vw;font-size:2.4vh;padding:.7vh 0" ')).join("")
   : "<li style='list-style:none;color:#7a4a4d;font-size:2.2vh'>No tasks this week</li>";
 
 $("#upd").textContent = DATA.updated;
@@ -394,7 +481,7 @@ $("#upd").textContent = DATA.updated;
 function tick(){ const t=new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
   document.querySelectorAll(".clock").forEach(c=>c.textContent=t); }
 tick(); setInterval(tick,15000);
-const screens=[$("#s0"),$("#s1"),$("#s2"),$("#s3"),$("#s4"),$("#s5")], dots=document.querySelectorAll(".dots span");
+const screens=[$("#s0"),$("#s1"),$("#s2"),$("#s3"),$("#s4"),$("#s5"),$("#s6")], dots=document.querySelectorAll(".dots span");
 let cur=0;
 function show(i){ cur=(i+screens.length)%screens.length; screens.forEach((s,j)=>s.classList.toggle("active",j===cur)); dots.forEach((d,j)=>d.classList.toggle("on",j===cur)); }
 show(0);
