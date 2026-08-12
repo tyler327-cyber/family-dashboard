@@ -14,9 +14,18 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Mon Aug 10, 2026 · 9:21 PM",
+  updated: "Tue Aug 11, 2026 · weekly targets approved",
 
-  wandaMessage: "Every dollar you keep this week is a brick in the house you're building.",
+  wandaMessage: "Your weekly plan resets Sunday. Small choices now protect the home and freedom you're building.",
+
+  budgetPlan: {
+    status: "Provisional · 4-week trial",
+    weekStarts: "Sunday",
+    rollover: false,
+    overallWeeklyTarget: 380,
+    combinedFoodTarget: 250,
+    lastSynced: null
+  },
 
   owners: {
     tyler:     { label: "Tyler",     short: "T",    color: "#4da3ff" },
@@ -77,13 +86,14 @@ const DATA = {
       spentWeek: 0, spentMonth: 2335,
       items: ["Rent", "Electric", "Internet", "Phone", "Insurance", "Student Loan"]
     },
-    // each category: spent + budget for BOTH week and month. gas has no cap (typical only).
+    // Approved Sunday-reset weekly targets. null spentWeek means the dashboard snapshot
+    // has not been synced yet; never display a misleading $0 in that case.
     variable: {
-      dining:    { spentWeek: 0, budgetWeek: 175, spentMonth: 279.22, budgetMonth: 758 },
-      groceries: { spentWeek: 0, budgetWeek: 150, spentMonth: 240.75, budgetMonth: 650 },
-      shopping:  { spentWeek: 0, budgetWeek: 115, spentMonth: 52.48, budgetMonth: 500 },
-      gas:       { spentWeek: 0, budgetWeek: 0,   spentMonth: 141.15, budgetMonth: 0, noCap: true },
-      other:     { spentWeek: 0, budgetWeek: 35,  spentMonth: 58.37, budgetMonth: 150 }
+      dining:    { spentWeek: null, budgetWeek: 125, spentMonth: 279.22, budgetMonth: null },
+      groceries: { spentWeek: null, budgetWeek: 125, spentMonth: 240.75, budgetMonth: null },
+      shopping:  { spentWeek: null, budgetWeek: 25,  spentMonth: 52.48,  budgetMonth: null },
+      gas:       { spentWeek: null, budgetWeek: 75,  spentMonth: 141.15, budgetMonth: null },
+      other:     { spentWeek: null, budgetWeek: 30,  spentMonth: 58.37,  budgetMonth: null }
     }
   },
 
@@ -274,7 +284,7 @@ const DATA = {
 
 <!-- 1 PERSONAL -->
 <section class="screen" id="s1">
-  <header><h1>Personal <span class="tag">· Money</span></h1><div class="clock"></div></header>
+  <header><h1>Personal <span class="tag">· Money · Weekly plan resets Sunday</span></h1><div class="clock"></div></header>
   <div class="ptop">
     <div class="col" id="colIncome"></div>
     <div class="col" id="colCashflow"></div>
@@ -328,7 +338,7 @@ const DATA = {
 
 <script>
 const $ = s => document.querySelector(s);
-const money = n => (n<0?"-$":"$") + Math.abs(n).toLocaleString("en-US",{maximumFractionDigits:0});
+const money = n => n==null ? "—" : (n<0?"-$":"$") + Math.abs(n).toLocaleString("en-US",{maximumFractionDigits:0});
 const P = DATA.personal, V = DATA.buckets.variable, Fx = DATA.buckets.fixed;
 
 /* ---- shared totals ---- */
@@ -339,11 +349,12 @@ const incomeTotal = P.income.month;
 const hr = new Date().getHours();
 $("#greet").textContent = hr<12?"Good morning":hr<18?"Good afternoon":"Good evening";
 $("#wandaMsg").textContent = DATA.wandaMessage||"";
-const dLeft = V.dining.budgetWeek - V.dining.spentWeek;
+const diningSynced = V.dining.spentWeek != null;
+const dLeft = diningSynced ? V.dining.budgetWeek - V.dining.spentWeek : null;
 const savingsTotal = DATA.savings.houseFund + DATA.savings.sofi + DATA.savings.robinhood + DATA.savings.ira;
 $("#sumGrid").innerHTML =
   tile("Cash flow · month", (cfNet>=0?"+":"")+money(cfNet), cfNet>=0?"good":"bad", "bank in vs out") +
-  tile("Dining left · week", money(dLeft), dLeft>=0?"good":"bad", "of "+money(V.dining.budgetWeek)) +
+  tile("Dining left · week", diningSynced?money(dLeft):"Sync needed", diningSynced?(dLeft>=0?"good":"bad"):"warn", "target "+money(V.dining.budgetWeek)) +
   tile("Savings + invest", money(savingsTotal), "", "toward the goal");
 function tile(lbl,big,cls,sub){ return `<div class="sumtile"><div class="lbl">${lbl}</div><div class="big ${cls}">${big}</div><div class="sub">${sub}</div></div>`; }
 $("#goalRow").innerHTML = DATA.goals.filter(g=>g.featured).slice(0,3).map(g=>`<div class="g"><div class="ge">${g.emoji}</div><div class="gl">${g.label}</div><div class="gn">${g.stage||""}</div></div>`).join("");
@@ -372,10 +383,13 @@ function expRows(period){ // period = 'Week' or 'Month'
   let html = catRow("Fixed", Fx[sp], Fx[period==='Week'?'weekly':'monthly'], "#8b6a3a");
   const order = [["Dining","dining"],["Groceries","groceries"],["Shopping","shopping"],["Gas","gas"],["Other","other"]];
   for(const [name,key] of order){ const c=V[key];
-    html += catRow(name, c[sp], c[bd], null, c.noCap); }
+    html += catRow(name, c[sp], c[bd], null, period==='Month'); }
   return html;
 }
 function catRow(name, spent, budget, fixedCol, noCap){
+  if(spent==null){
+    return `<div class="mini"><div class="minirow"><span class="mininame">${name}</span><span class="miniamt warn">Awaiting sync · target ${money(budget)}</span></div>${bar(0,budget,"#5a2428")}</div>`;
+  }
   const p = budget?Math.min(100,spent/budget*100):0;
   const col = fixedCol || (noCap?"#c98b8b":p<70?"#3fb950":p<100?"#d29922":"#f85149");
   const right = noCap?money(spent):money(spent)+" / "+money(budget);

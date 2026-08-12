@@ -53,6 +53,13 @@ const context = vm.createContext({
 for (const script of scripts) new vm.Script(script).runInContext(context);
 
 assert.match(getElement("#sumGrid").innerHTML, /Cash flow/);
+assert.match(getElement("#sumGrid").innerHTML, /Sync needed/);
+assert.equal(new vm.Script("DATA.budgetPlan.overallWeeklyTarget").runInContext(context), 380);
+assert.equal(new vm.Script("DATA.budgetPlan.combinedFoodTarget").runInContext(context), 250);
+assert.equal(new vm.Script("DATA.buckets.variable.dining.budgetWeek").runInContext(context), 125);
+assert.equal(new vm.Script("DATA.buckets.variable.groceries.budgetWeek").runInContext(context), 125);
+assert.equal(new vm.Script("DATA.buckets.variable.gas.budgetWeek").runInContext(context), 75);
+assert.match(getElement("#expWeek").innerHTML, /Awaiting sync/);
 assert.match(getElement("#goalGrid").innerHTML, /Buy a home/);
 assert.match(getElement("#goalGrid").innerHTML, /Find fulfilling work/);
 assert.match(getElement("#goalGrid").innerHTML, /Build Elsai into a service/);
