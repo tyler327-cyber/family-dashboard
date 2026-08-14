@@ -14,16 +14,16 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Thu Aug 13, 2026 · 10:38 PM",
+  updated: "Fri Aug 14, 2026 · 8:04 AM",
 
-  wandaMessage: "Your weekly plan resets Sunday. Small choices now protect the home and freedom you're building.",
+  wandaMessage: "Stabilization week: Amex 83007 is capped at $300. Dining is over target — choose groceries/home food until Sunday.",
 
   budgetPlan: {
-    status: "Provisional · 4-week trial",
+    status: "Stabilization · Amex reset",
     weekStarts: "Sunday",
     rollover: false,
-    overallWeeklyTarget: 380,
-    combinedFoodTarget: 250,
+    overallWeeklyTarget: 300,
+    combinedFoodTarget: 200,
     lastSynced: null
   },
 
@@ -61,11 +61,11 @@ const DATA = {
     // Approved Sunday-reset weekly targets. null spentWeek means the dashboard snapshot
     // has not been synced yet; never display a misleading $0 in that case.
     variable: {
-      dining:    { spentWeek: 161.98, budgetWeek: 125, spentMonth: 441.20, budgetMonth: null },
+      dining:    { spentWeek: 161.98, budgetWeek: 75,  spentMonth: 441.20, budgetMonth: null },
       groceries: { spentWeek: 138.42, budgetWeek: 125, spentMonth: 379.17, budgetMonth: null },
       shopping:  { spentWeek: 174.72, budgetWeek: 25,  spentMonth: 227.20, budgetMonth: null },
-      gas:       { spentWeek: 0,      budgetWeek: 75,  spentMonth: 141.15, budgetMonth: null },
-      other:     { spentWeek: 21.01,  budgetWeek: 30,  spentMonth: 79.38,  budgetMonth: null }
+      gas:       { spentWeek: 0,      budgetWeek: 50,  spentMonth: 141.15, budgetMonth: null },
+      other:     { spentWeek: 21.01,  budgetWeek: 25,  spentMonth: 79.38,  budgetMonth: null }
     }
   },
 
@@ -87,7 +87,8 @@ const DATA = {
       { text: "Schedule the Toyota Prius for Saturday morning car detailing", done: true },
       { text: "Take pictures of the Toyota Prius after detailing", done: false },
       { text: "Post the Toyota Prius online for sale", done: false },
-      { text: "Tyler: See how to get the benefits card for Priscilla", done: false }
+      { text: "Tyler: See how to get the benefits card for Priscilla", done: false },
+      { text: "Both: Keep Amex 83007 under the $300 weekly cap; no more dining/takeout until Sunday", done: false }
     ],
     month: [
       { text: "Sell the Toyota Prius", done: false },
@@ -296,11 +297,14 @@ $("#greet").textContent = hr<12?"Good morning":hr<18?"Good afternoon":"Good even
 $("#wandaMsg").textContent = DATA.wandaMessage||"";
 const diningSynced = V.dining.spentWeek != null;
 const dLeft = diningSynced ? V.dining.budgetWeek - V.dining.spentWeek : null;
+const variableKeys = ["dining", "groceries", "shopping", "gas", "other"];
+const weekVariableSpent = variableKeys.reduce((sum,k)=>sum + (V[k].spentWeek || 0), 0);
+const weekVariableLeft = DATA.budgetPlan.overallWeeklyTarget - weekVariableSpent;
 const savingsTotal = DATA.savings.houseFund + DATA.savings.sofi + DATA.savings.robinhood + DATA.savings.ira;
 $("#sumGrid").innerHTML =
-  tile("Cash flow · month", (cfNet>=0?"+":"")+money(cfNet), cfNet>=0?"good":"bad", "bank in vs out") +
+  tile("Amex cap left · week", money(weekVariableLeft), weekVariableLeft>=0?"good":"bad", "spent "+money(weekVariableSpent)+" / "+money(DATA.budgetPlan.overallWeeklyTarget)) +
   tile("Dining left · week", diningSynced?money(dLeft):"Sync needed", diningSynced?(dLeft>=0?"good":"bad"):"warn", "target "+money(V.dining.budgetWeek)) +
-  tile("Savings + invest", money(savingsTotal), "", "toward the goal");
+  tile("Cash flow · month", (cfNet>=0?"+":"")+money(cfNet), cfNet>=0?"good":"bad", "bank in vs out");
 function tile(lbl,big,cls,sub){ return `<div class="sumtile"><div class="lbl">${lbl}</div><div class="big ${cls}">${big}</div><div class="sub">${sub}</div></div>`; }
 $("#goalRow").innerHTML = DATA.goals.map(g=>`<div class="g"><div class="ge">${g.emoji}</div><div class="gl">${g.label}</div><div class="gn">${g.note||""}</div></div>`).join("");
 
