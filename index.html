@@ -14,7 +14,7 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Fri Aug 14, 2026 · 8:04 AM",
+  updated: "Fri Aug 14, 2026 · 8:30 AM",
 
   wandaMessage: "Stabilization week: Amex 83007 is capped at $300. Dining is over target — choose groceries/home food until Sunday.",
 
@@ -132,6 +132,19 @@ const DATA = {
     border-radius:20px; padding:2.2vh 3vh; box-shadow:0 0 40px rgba(224,62,82,.15) inset; flex:0 0 auto; }
   .wportrait { height:16vh; border-radius:16px; flex:0 0 auto; box-shadow:0 0 30px rgba(224,62,82,.35); }
   .wmsg { font-size:3.4vh; line-height:1.3; font-weight:500; }
+  .foodsignal { display:grid; grid-template-columns:.9fr 1.1fr; gap:2.2vw; align-items:center; border-radius:24px; padding:3vh;
+    border:2px solid rgba(248,81,73,.75); background:linear-gradient(135deg,#4b080c,#2a0d10 58%,#1a0608);
+    box-shadow:0 0 50px rgba(248,81,73,.28), inset 0 0 35px rgba(248,81,73,.12); }
+  .foodsignal.yellow { border-color:rgba(210,153,34,.8); background:linear-gradient(135deg,#4a2b00,#2a0d10 58%,#1a0608); box-shadow:0 0 50px rgba(210,153,34,.24), inset 0 0 35px rgba(210,153,34,.12); }
+  .foodsignal.green { border-color:rgba(63,185,80,.8); background:linear-gradient(135deg,#0b3d1b,#2a0d10 58%,#1a0608); box-shadow:0 0 50px rgba(63,185,80,.24), inset 0 0 35px rgba(63,185,80,.12); }
+  .foodsignal .question { font-size:2.1vh; color:#ffd5d5; text-transform:uppercase; letter-spacing:.1em; }
+  .foodsignal .answer { font-size:7vh; line-height:1; font-weight:900; margin:.8vh 0; color:#fff; text-shadow:0 0 24px rgba(255,255,255,.18); }
+  .foodsignal .reason { font-size:2.5vh; color:#fbe9e9; }
+  .foodsignal .numbers { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2vw; }
+  .foodsignal .num { background:rgba(26,6,8,.55); border:1px solid rgba(251,233,233,.16); border-radius:16px; padding:1.8vh; text-align:center; }
+  .foodsignal .num .nlabel { font-size:1.7vh; color:#ffd5d5; text-transform:uppercase; letter-spacing:.08em; }
+  .foodsignal .num .nval { font-size:3.8vh; font-weight:800; font-variant-numeric:tabular-nums; margin-top:.5vh; }
+  .foodsignal .next { grid-column:1/-1; text-align:center; font-size:2.3vh; color:#ffd5d5; margin-top:.6vh; }
   .sumgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:2.2vw; flex:0 0 auto; }
   .sumtile { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:3vh; text-align:center;
     display:flex; flex-direction:column; justify-content:center; aspect-ratio:1.9; }
@@ -230,6 +243,7 @@ const DATA = {
       <img class="wportrait" src="wanda.png" alt="Wanda" onerror="this.style.display='none'">
       <div class="wmsg" id="wandaMsg"></div>
     </div>
+    <div id="foodSignal" class="foodsignal"></div>
     <div class="sumgrid" id="sumGrid"></div>
     <div class="goalrow" id="goalRow"></div>
   </div>
@@ -300,6 +314,29 @@ const dLeft = diningSynced ? V.dining.budgetWeek - V.dining.spentWeek : null;
 const variableKeys = ["dining", "groceries", "shopping", "gas", "other"];
 const weekVariableSpent = variableKeys.reduce((sum,k)=>sum + (V[k].spentWeek || 0), 0);
 const weekVariableLeft = DATA.budgetPlan.overallWeeklyTarget - weekVariableSpent;
+const resetDay = DATA.budgetPlan.weekStarts || "Sunday";
+const foodState = dLeft < 0 ? "red" : dLeft <= 25 ? "yellow" : "green";
+const foodAnswer = foodState === "green" ? "YES" : foodState === "yellow" ? "CAREFUL" : "NO";
+const foodReason = foodState === "red"
+  ? "Dining is over target. Choose groceries or home food until reset."
+  : foodState === "yellow"
+    ? "Small/simple food only — dining is almost used up."
+    : "Okay if it stays inside the weekly cap.";
+const foodEl = $("#foodSignal");
+foodEl.classList.toggle("green", foodState === "green");
+foodEl.classList.toggle("yellow", foodState === "yellow");
+foodEl.innerHTML = `
+  <div>
+    <div class="question">Can we eat out?</div>
+    <div class="answer">${foodAnswer}</div>
+    <div class="reason">${foodReason}</div>
+  </div>
+  <div class="numbers">
+    <div class="num"><div class="nlabel">Dining</div><div class="nval">${money(V.dining.spentWeek)} / ${money(V.dining.budgetWeek)}</div></div>
+    <div class="num"><div class="nlabel">Amex cap</div><div class="nval">${money(weekVariableSpent)} / ${money(DATA.budgetPlan.overallWeeklyTarget)}</div></div>
+    <div class="num"><div class="nlabel">Cap left</div><div class="nval ${weekVariableLeft>=0?'good':'bad'}">${money(weekVariableLeft)}</div></div>
+    <div class="next">Next reset: ${resetDay} · This is a temporary stabilization plan.</div>
+  </div>`;
 const savingsTotal = DATA.savings.houseFund + DATA.savings.sofi + DATA.savings.robinhood + DATA.savings.ira;
 $("#sumGrid").innerHTML =
   tile("Amex cap left · week", money(weekVariableLeft), weekVariableLeft>=0?"good":"bad", "spent "+money(weekVariableSpent)+" / "+money(DATA.budgetPlan.overallWeeklyTarget)) +
