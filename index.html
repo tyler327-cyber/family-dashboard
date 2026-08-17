@@ -14,9 +14,9 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Mon Aug 17, 2026 · 6:38 AM UTC",
+  updated: "Mon Aug 17, 2026 · 6:47 AM UTC",
 
-  wandaMessage: "Amex is manageable: $46.63 spent this week / $380. Dining is $41.63 / $125 — calm down on eating out and keep cash protected.",
+  wandaMessage: "Goal reminder: study for the real estate license so we can sell the CA Palmdale home and stabilize cash flow.",
 
   budgetPlan: {
     status: "Current week · cash protected",
@@ -36,7 +36,8 @@ const DATA = {
       palmdaleExpectedBooking: 827.42,
       palmdaleCleanerDue: 360,
       easyLaunch3235: 4641.63,
-      easyLaunch1130: 14.91
+      easyLaunch1130: 14.91,
+      azPegasus8072: null
     }
   },
 
@@ -150,6 +151,9 @@ const DATA = {
     border-radius:20px; padding:2.2vh 3vh; box-shadow:0 0 40px rgba(224,62,82,.15) inset; flex:0 0 auto; }
   .wportrait { height:16vh; border-radius:16px; flex:0 0 auto; box-shadow:0 0 30px rgba(224,62,82,.35); }
   .wmsg { font-size:3.4vh; line-height:1.3; font-weight:500; }
+  .goalcard { background:#2a0d10; border:1px solid #4a1a1f; border-radius:20px; padding:2.2vh 3vh;
+    box-shadow:0 0 40px rgba(224,62,82,.15) inset; font-size:3.2vh; line-height:1.25; font-weight:650; }
+  .goalcard .glabel { color:#ff7a8a; text-transform:uppercase; letter-spacing:.09em; font-size:1.8vh; margin-bottom:.5vh; }
   .foodsignal { display:grid; grid-template-columns:.9fr 1.1fr; gap:2.2vw; align-items:center; border-radius:24px; padding:3vh;
     border:2px solid rgba(248,81,73,.75); background:linear-gradient(135deg,#4b080c,#2a0d10 58%,#1a0608);
     box-shadow:0 0 50px rgba(248,81,73,.28), inset 0 0 35px rgba(248,81,73,.12); }
@@ -164,6 +168,17 @@ const DATA = {
   .foodsignal .num .nval { font-size:3.8vh; font-weight:800; font-variant-numeric:tabular-nums; margin-top:.5vh; }
   .foodsignal .next { grid-column:1/-1; text-align:center; font-size:2.3vh; color:#ffd5d5; margin-top:.6vh; }
   .sumgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:2.2vw; flex:0 0 auto; }
+  .mainfinance { display:grid; grid-template-columns:.95fr 1.05fr; gap:2.2vw; flex:1; min-height:0; }
+  .mainfinance .sumgrid { grid-template-columns:1fr; gap:1.5vh; }
+  .mainfinance .sumtile { aspect-ratio:auto; min-height:0; padding:2.2vh; }
+  .mainfinance .sumtile .big { font-size:4.6vh; }
+  .acctcard { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2.4vh; min-height:0; }
+  .accttitle { font-size:2vh; color:#c98b8b; text-transform:uppercase; letter-spacing:.08em; margin-bottom:1vh; }
+  .acctrow { display:grid; grid-template-columns:1fr auto; gap:1.2vw; align-items:baseline; padding:1.15vh 0; border-bottom:1px solid #3a1418; }
+  .acctrow:last-child { border-bottom:none; }
+  .acctname { font-size:2.35vh; color:#fbe9e9; }
+  .acctpurpose { display:block; color:#c98b8b; font-size:1.85vh; margin-top:.15vh; }
+  .acctbal { font-size:3vh; font-weight:800; font-variant-numeric:tabular-nums; }
   .sumtile { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:3vh; text-align:center;
     display:flex; flex-direction:column; justify-content:center; aspect-ratio:1.9; }
   .sumtile .lbl { font-size:2vh; }
@@ -257,13 +272,12 @@ const DATA = {
 <section class="screen" id="s0">
   <header><h1 id="greet">Good morning</h1><div class="clock"></div></header>
   <div class="summary">
-    <div class="wcard">
-      <img class="wportrait" src="wanda.png" alt="Wanda" onerror="this.style.display='none'">
-      <div class="wmsg" id="wandaMsg"></div>
-    </div>
+    <div class="goalcard"><div class="glabel">Main goal</div><div id="wandaMsg"></div></div>
     <div id="foodSignal" class="foodsignal"></div>
-    <div class="sumgrid" id="sumGrid"></div>
-    <div class="goalrow" id="goalRow"></div>
+    <div class="mainfinance">
+      <div class="sumgrid" id="sumGrid"></div>
+      <div class="acctcard"><div class="accttitle">Account balances</div><div id="accountBalances"></div></div>
+    </div>
   </div>
 </section>
 
@@ -367,7 +381,17 @@ $("#sumGrid").innerHTML =
   tile("Dining left · week", diningSynced?money(dLeft):"Sync needed", diningSynced?(dLeft>=0?"good":"bad"):"warn", "spent "+money(V.dining.spentWeek)+" / "+money(V.dining.budgetWeek)) +
   tile("Amex balance", money(DATA.budgetPlan.amexTotalBalance), "warn", "pending "+money(DATA.budgetPlan.amexPending));
 function tile(lbl,big,cls,sub){ return `<div class="sumtile"><div class="lbl">${lbl}</div><div class="big ${cls}">${big}</div><div class="sub">${sub}</div></div>`; }
-$("#goalRow").innerHTML = DATA.goals.map(g=>`<div class="g"><div class="ge">${g.emoji}</div><div class="gl">${g.label}</div><div class="gn">${g.note||""}</div></div>`).join("");
+const A = DATA.budgetPlan.accountBalances || {};
+const accountRows = [
+  ["Chase 3222", "Main Joint account", A.personal3222],
+  ["Chase 1969", "AZ Ramar", A.azRamar1969],
+  ["Chase 3235", "Easy Launch Services", A.easyLaunch3235],
+  ["Chase 3602", "CA Palmdale Home", A.palmdale3602],
+  ["Chase 8072", "AZ Pegasus", A.azPegasus8072]
+];
+$("#accountBalances").innerHTML = accountRows.map(([name,purpose,balance]) =>
+  `<div class="acctrow"><div class="acctname">${name}<span class="acctpurpose">${purpose}</span></div><div class="acctbal ${balance==null?'warn':balance<500?'warn':'good'}">${money(balance)}</div></div>`
+).join("");
 
 /* ---- PERSONAL ---- */
 // Top-left: Income
@@ -431,8 +455,7 @@ $("#saveGrid").innerHTML =
   saveCard("Self-Directed IRA", S.ira, "retirement", "") +
   saveCard("SoFi Savings", S.sofi, "emergency fund", "");
 function saveCard(name,val,note,cls){ return `<div class="savecard"><div class="sname">${name}</div><div class="sval ${cls}">${money(val)}</div><div class="snote">${note}</div></div>`; }
-const A = DATA.budgetPlan.accountBalances || {};
-$("#saveTotal").innerHTML = `Cash map: 3222 <b>${money(A.personal3222)}</b> · 1969 <b>${money(A.azRamar1969)}</b> · 3602 <b>${money(A.palmdale3602)}</b> (+${money(A.palmdaleExpectedBooking - A.palmdaleCleanerDue)} net pending) · Easy Launch <b>${money((A.easyLaunch3235||0)+(A.easyLaunch1130||0))}</b>`;
+$("#saveTotal").innerHTML = `Total saved &amp; invested: <b>${money(savingsTotal)}</b>`;
 
 /* ---- TASKS: grouped day/week/month with % ---- */
 const allTasks = [...(DATA.tasks.day||[]), ...(DATA.tasks.week||[]), ...(DATA.tasks.month||[])];
