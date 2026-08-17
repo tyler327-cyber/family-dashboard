@@ -14,18 +14,30 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Mon Aug 17, 2026 · 6:25 AM UTC",
+  updated: "Mon Aug 17, 2026 · 6:38 AM UTC",
 
-  wandaMessage: "New budget week: $380 variable target resets Sunday. Account data needs updates before spending confidence is high.",
+  wandaMessage: "Amex is manageable: $46.63 spent this week / $380. Dining is $41.63 / $125 — calm down on eating out and keep cash protected.",
 
   budgetPlan: {
-    status: "Budget-only · account updates needed",
+    status: "Current week · cash protected",
     weekStarts: "Sunday",
     rollover: false,
     overallWeeklyTarget: 380,
     combinedFoodTarget: 250,
-    lastSynced: "2026-08-16",
-    dataFreshnessNote: "No transaction update: Chase 3222 and Amex 83007 since Aug 13; Chase 3235 since Aug 11; Chase 1969 since Aug 3."
+    lastSynced: "2026-08-17",
+    amexTotalBalance: 225.27,
+    amexPending: 63.41,
+    amexPosted: 2636.35,
+    dataFreshnessNote: "Updated from Tyler: 3222 after $300 transfer ≈ $2,458.73; 1969 ≈ $461.07; Amex total balance $225.27.",
+    accountBalances: {
+      personal3222: 2458.73,
+      azRamar1969: 461.07,
+      palmdale3602: 3149.77,
+      palmdaleExpectedBooking: 827.42,
+      palmdaleCleanerDue: 360,
+      easyLaunch3235: 4641.63,
+      easyLaunch1130: 14.91
+    }
   },
 
   goals: [
@@ -62,11 +74,11 @@ const DATA = {
     // Approved Sunday-reset weekly targets. null spentWeek means the dashboard snapshot
     // has not been synced yet; never display a misleading $0 in that case.
     variable: {
-      dining:    { spentWeek: null, budgetWeek: 125, spentMonth: 441.20, budgetMonth: null },
-      groceries: { spentWeek: null, budgetWeek: 125, spentMonth: 379.17, budgetMonth: null },
-      shopping:  { spentWeek: null, budgetWeek: 25,  spentMonth: 227.20, budgetMonth: null },
-      gas:       { spentWeek: null, budgetWeek: 75,  spentMonth: 141.15, budgetMonth: null },
-      other:     { spentWeek: null, budgetWeek: 30,  spentMonth: 79.38,  budgetMonth: null }
+      dining:    { spentWeek: 41.63, budgetWeek: 125, spentMonth: 482.83, budgetMonth: null },
+      groceries: { spentWeek: 0,     budgetWeek: 125, spentMonth: 379.17, budgetMonth: null },
+      shopping:  { spentWeek: 0,     budgetWeek: 25,  spentMonth: 227.20, budgetMonth: null },
+      gas:       { spentWeek: 0,     budgetWeek: 75,  spentMonth: 141.15, budgetMonth: null },
+      other:     { spentWeek: 5.00,  budgetWeek: 30,  spentMonth: 84.38,  budgetMonth: null }
     }
   },
 
@@ -90,7 +102,8 @@ const DATA = {
       { text: "Post the Toyota Prius online for sale", done: true },
       { text: "Tyler: See how to get the benefits card for Priscilla", done: false },
       { text: "Both: Keep variable spending within the $380 Sunday-reset weekly budget", done: false },
-      { text: "Tyler: Update Chase 3222 and Amex 83007 account activity since Aug 13", done: false },
+      { text: "Tyler: Updated Chase 3222, 1969, 3602, and Amex balances", done: true },
+      { text: "Both: Calm down on eating out — keep Dining/Takeout under $125 this week", done: false },
       { text: "Tyler: Look out for insurance email and mortgage email about insurance cancellation notices", done: false },
       { text: "Tyler: Research where to buy tires for the 2025 Hyundai Santa Fe", done: false },
       { text: "Tyler: Find where to do an oil change for the 2025 Hyundai Santa Fe", done: false }
@@ -321,15 +334,18 @@ const dLeft = diningSynced ? V.dining.budgetWeek - V.dining.spentWeek : null;
 const weekVariableSpent = weekSynced ? variableKeys.reduce((sum,k)=>sum + V[k].spentWeek, 0) : null;
 const weekVariableLeft = weekSynced ? DATA.budgetPlan.overallWeeklyTarget - weekVariableSpent : null;
 const resetDay = DATA.budgetPlan.weekStarts || "Sunday";
-const foodState = !diningSynced ? "yellow" : dLeft < 0 ? "red" : dLeft <= 25 ? "yellow" : "green";
+const diningDisciplineNeeded = diningSynced && V.dining.spentWeek >= 40;
+const foodState = !diningSynced ? "yellow" : dLeft < 0 ? "red" : (dLeft <= 25 || diningDisciplineNeeded) ? "yellow" : "green";
 const foodAnswer = !diningSynced ? "CHECK" : foodState === "green" ? "YES" : foodState === "yellow" ? "CAREFUL" : "NO";
 const foodReason = !diningSynced
   ? "Budget reset, but account activity has not updated. Keep spending conservative until synced."
   : foodState === "red"
     ? "Dining is over target. Choose groceries or home food until reset."
-    : foodState === "yellow"
-      ? "Small/simple food only — dining is almost used up."
-      : "Okay if it stays inside the weekly cap.";
+    : diningDisciplineNeeded
+      ? "Taco Stand used about one-third of dining. Slow down and favor home food."
+      : foodState === "yellow"
+        ? "Small/simple food only — dining is almost used up."
+        : "Okay if it stays inside the weekly cap.";
 const foodEl = $("#foodSignal");
 foodEl.classList.toggle("green", foodState === "green");
 foodEl.classList.toggle("yellow", foodState === "yellow");
@@ -348,8 +364,8 @@ foodEl.innerHTML = `
 const savingsTotal = DATA.savings.houseFund + DATA.savings.sofi + DATA.savings.robinhood + DATA.savings.ira;
 $("#sumGrid").innerHTML =
   tile("Week cap left", weekSynced?money(weekVariableLeft):"Sync needed", weekSynced?(weekVariableLeft>=0?"good":"bad"):"warn", weekSynced ? "spent "+money(weekVariableSpent)+" / "+money(DATA.budgetPlan.overallWeeklyTarget) : "account updates needed") +
-  tile("Dining left · week", diningSynced?money(dLeft):"Sync needed", diningSynced?(dLeft>=0?"good":"bad"):"warn", "target "+money(V.dining.budgetWeek)) +
-  tile("Cash flow · month", (cfNet>=0?"+":"")+money(cfNet), cfNet>=0?"good":"bad", "bank in vs out");
+  tile("Dining left · week", diningSynced?money(dLeft):"Sync needed", diningSynced?(dLeft>=0?"good":"bad"):"warn", "spent "+money(V.dining.spentWeek)+" / "+money(V.dining.budgetWeek)) +
+  tile("Amex balance", money(DATA.budgetPlan.amexTotalBalance), "warn", "pending "+money(DATA.budgetPlan.amexPending));
 function tile(lbl,big,cls,sub){ return `<div class="sumtile"><div class="lbl">${lbl}</div><div class="big ${cls}">${big}</div><div class="sub">${sub}</div></div>`; }
 $("#goalRow").innerHTML = DATA.goals.map(g=>`<div class="g"><div class="ge">${g.emoji}</div><div class="gl">${g.label}</div><div class="gn">${g.note||""}</div></div>`).join("");
 
@@ -415,7 +431,8 @@ $("#saveGrid").innerHTML =
   saveCard("Self-Directed IRA", S.ira, "retirement", "") +
   saveCard("SoFi Savings", S.sofi, "emergency fund", "");
 function saveCard(name,val,note,cls){ return `<div class="savecard"><div class="sname">${name}</div><div class="sval ${cls}">${money(val)}</div><div class="snote">${note}</div></div>`; }
-$("#saveTotal").innerHTML = `Total saved &amp; invested: <b>${money(savingsTotal)}</b>`;
+const A = DATA.budgetPlan.accountBalances || {};
+$("#saveTotal").innerHTML = `Cash map: 3222 <b>${money(A.personal3222)}</b> · 1969 <b>${money(A.azRamar1969)}</b> · 3602 <b>${money(A.palmdale3602)}</b> (+${money(A.palmdaleExpectedBooking - A.palmdaleCleanerDue)} net pending) · Easy Launch <b>${money((A.easyLaunch3235||0)+(A.easyLaunch1130||0))}</b>`;
 
 /* ---- TASKS: grouped day/week/month with % ---- */
 const allTasks = [...(DATA.tasks.day||[]), ...(DATA.tasks.week||[]), ...(DATA.tasks.month||[])];
