@@ -14,7 +14,7 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Mon Aug 17, 2026 · 6:47 AM UTC",
+  updated: "Mon Aug 17, 2026 · 6:54 AM UTC",
 
   wandaMessage: "Goal reminder: study for the real estate license so we can sell the CA Palmdale home and stabilize cash flow.",
 
@@ -131,13 +131,13 @@ const DATA = {
   .wanda { position:fixed; bottom:0; right:2vw; height:56vh; z-index:0; opacity:.12; pointer-events:none;
     -webkit-mask-image:linear-gradient(to top, transparent, #000 45%); mask-image:linear-gradient(to top, transparent, #000 45%); }
 
-  .screen { position:absolute; inset:0; padding:4vh 4vw; opacity:0; z-index:1;
+  .screen { position:absolute; inset:0; padding:3vh 2.8vw; opacity:0; z-index:1;
     transition:opacity 1s ease; pointer-events:none; display:flex; flex-direction:column; }
   .screen.active { opacity:1; pointer-events:auto; }
-  header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:2.5vh; }
-  h1 { font-size:3.8vh; letter-spacing:.05em; font-weight:700; text-transform:uppercase; color:#ff7a8a; text-shadow:0 0 24px rgba(224,62,82,.4); }
+  header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:1.5vh; }
+  h1 { font-size:3.5vh; letter-spacing:.05em; font-weight:700; text-transform:uppercase; color:#ff7a8a; text-shadow:0 0 24px rgba(224,62,82,.4); }
   h1 .tag { color:#c98b8b; font-weight:400; }
-  .clock { font-size:3.6vh; color:#c98b8b; font-variant-numeric:tabular-nums; }
+  .clock { font-size:3.3vh; color:#c98b8b; font-variant-numeric:tabular-nums; }
   .good { color:#3fb950; } .bad { color:#f85149; } .warn { color:#d29922; }
   .in { color:#3fb950; } .out { color:#f85149; }
 
@@ -146,39 +146,41 @@ const DATA = {
   .lbl { font-size:2vh; color:#c98b8b; text-transform:uppercase; letter-spacing:.08em; }
 
   /* SUMMARY screen */
-  .summary { display:flex; flex-direction:column; gap:2.5vh; flex:1; min-height:0; justify-content:flex-start; }
+  .summary { display:flex; flex-direction:column; gap:1.4vh; flex:1; min-height:0; justify-content:flex-start; }
   .wcard { display:flex; align-items:center; gap:2.5vw; background:#2a0d10; border:1px solid #4a1a1f;
     border-radius:20px; padding:2.2vh 3vh; box-shadow:0 0 40px rgba(224,62,82,.15) inset; flex:0 0 auto; }
   .wportrait { height:16vh; border-radius:16px; flex:0 0 auto; box-shadow:0 0 30px rgba(224,62,82,.35); }
   .wmsg { font-size:3.4vh; line-height:1.3; font-weight:500; }
-  .goalcard { background:#2a0d10; border:1px solid #4a1a1f; border-radius:20px; padding:2.2vh 3vh;
-    box-shadow:0 0 40px rgba(224,62,82,.15) inset; font-size:3.2vh; line-height:1.25; font-weight:650; }
-  .goalcard .glabel { color:#ff7a8a; text-transform:uppercase; letter-spacing:.09em; font-size:1.8vh; margin-bottom:.5vh; }
-  .foodsignal { display:grid; grid-template-columns:.9fr 1.1fr; gap:2.2vw; align-items:center; border-radius:24px; padding:3vh;
+  .goalcard { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:1.5vh 2vh;
+    box-shadow:0 0 40px rgba(224,62,82,.15) inset; font-size:2.7vh; line-height:1.18; font-weight:650; }
+  .goalcard .glabel { color:#ff7a8a; text-transform:uppercase; letter-spacing:.09em; font-size:1.55vh; margin-bottom:.35vh; }
+  .foodsignal { display:grid; grid-template-columns:.85fr 1.15fr; gap:2vw; align-items:center; border-radius:22px; padding:2vh;
     border:2px solid rgba(248,81,73,.75); background:linear-gradient(135deg,#4b080c,#2a0d10 58%,#1a0608);
     box-shadow:0 0 50px rgba(248,81,73,.28), inset 0 0 35px rgba(248,81,73,.12); }
   .foodsignal.yellow { border-color:rgba(210,153,34,.8); background:linear-gradient(135deg,#4a2b00,#2a0d10 58%,#1a0608); box-shadow:0 0 50px rgba(210,153,34,.24), inset 0 0 35px rgba(210,153,34,.12); }
   .foodsignal.green { border-color:rgba(63,185,80,.8); background:linear-gradient(135deg,#0b3d1b,#2a0d10 58%,#1a0608); box-shadow:0 0 50px rgba(63,185,80,.24), inset 0 0 35px rgba(63,185,80,.12); }
-  .foodsignal .question { font-size:2.1vh; color:#ffd5d5; text-transform:uppercase; letter-spacing:.1em; }
-  .foodsignal .answer { font-size:7vh; line-height:1; font-weight:900; margin:.8vh 0; color:#fff; text-shadow:0 0 24px rgba(255,255,255,.18); }
-  .foodsignal .reason { font-size:2.5vh; color:#fbe9e9; }
-  .foodsignal .numbers { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2vw; }
-  .foodsignal .num { background:rgba(26,6,8,.55); border:1px solid rgba(251,233,233,.16); border-radius:16px; padding:1.8vh; text-align:center; }
-  .foodsignal .num .nlabel { font-size:1.7vh; color:#ffd5d5; text-transform:uppercase; letter-spacing:.08em; }
-  .foodsignal .num .nval { font-size:3.8vh; font-weight:800; font-variant-numeric:tabular-nums; margin-top:.5vh; }
-  .foodsignal .next { grid-column:1/-1; text-align:center; font-size:2.3vh; color:#ffd5d5; margin-top:.6vh; }
+  .foodsignal .question { font-size:1.85vh; color:#ffd5d5; text-transform:uppercase; letter-spacing:.1em; }
+  .foodsignal .answer { font-size:5.7vh; line-height:1; font-weight:900; margin:.45vh 0; color:#fff; text-shadow:0 0 24px rgba(255,255,255,.18); }
+  .foodsignal .reason { font-size:2.15vh; color:#fbe9e9; }
+  .foodsignal .numbers { display:grid; grid-template-columns:repeat(3,1fr); gap:1vw; }
+  .foodsignal .num { background:rgba(26,6,8,.55); border:1px solid rgba(251,233,233,.16); border-radius:14px; padding:1.25vh; text-align:center; }
+  .foodsignal .num .nlabel { font-size:1.45vh; color:#ffd5d5; text-transform:uppercase; letter-spacing:.08em; }
+  .foodsignal .num .nval { font-size:3.1vh; font-weight:800; font-variant-numeric:tabular-nums; margin-top:.35vh; }
+  .foodsignal .next { grid-column:1/-1; text-align:center; font-size:1.8vh; color:#ffd5d5; margin-top:.2vh; }
   .sumgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:2.2vw; flex:0 0 auto; }
-  .mainfinance { display:grid; grid-template-columns:.95fr 1.05fr; gap:2.2vw; flex:1; min-height:0; }
-  .mainfinance .sumgrid { grid-template-columns:1fr; gap:1.5vh; }
-  .mainfinance .sumtile { aspect-ratio:auto; min-height:0; padding:2.2vh; }
-  .mainfinance .sumtile .big { font-size:4.6vh; }
-  .acctcard { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2.4vh; min-height:0; }
-  .accttitle { font-size:2vh; color:#c98b8b; text-transform:uppercase; letter-spacing:.08em; margin-bottom:1vh; }
-  .acctrow { display:grid; grid-template-columns:1fr auto; gap:1.2vw; align-items:baseline; padding:1.15vh 0; border-bottom:1px solid #3a1418; }
-  .acctrow:last-child { border-bottom:none; }
-  .acctname { font-size:2.35vh; color:#fbe9e9; }
-  .acctpurpose { display:block; color:#c98b8b; font-size:1.85vh; margin-top:.15vh; }
-  .acctbal { font-size:3vh; font-weight:800; font-variant-numeric:tabular-nums; }
+  .mainfinance { display:grid; grid-template-columns:.9fr 1.1fr; gap:1.5vw; flex:1; min-height:0; }
+  .mainfinance .sumgrid { grid-template-columns:1fr; gap:1vh; }
+  .mainfinance .sumtile { aspect-ratio:auto; min-height:0; padding:1.35vh; }
+  .mainfinance .sumtile .big { font-size:3.8vh; margin:.35vh 0; }
+  .mainfinance .sumtile .lbl { font-size:1.6vh; }
+  .mainfinance .sumtile .sub { font-size:1.7vh; }
+  .acctcard { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:1.5vh; min-height:0; }
+  .accttitle { font-size:1.7vh; color:#c98b8b; text-transform:uppercase; letter-spacing:.08em; margin-bottom:1vh; }
+  .acctgrid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:1vh; }
+  .acctrow { background:rgba(26,6,8,.42); border:1px solid #3a1418; border-radius:14px; padding:1.1vh 1.2vh; min-width:0; }
+  .acctname { font-size:1.95vh; color:#fbe9e9; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .acctpurpose { display:block; color:#c98b8b; font-size:1.55vh; margin-top:.1vh; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .acctbal { display:block; font-size:2.65vh; font-weight:800; font-variant-numeric:tabular-nums; margin-top:.55vh; }
   .sumtile { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:3vh; text-align:center;
     display:flex; flex-direction:column; justify-content:center; aspect-ratio:1.9; }
   .sumtile .lbl { font-size:2vh; }
@@ -373,7 +375,7 @@ foodEl.innerHTML = `
     <div class="num"><div class="nlabel">Dining</div><div class="nval">${money(V.dining.spentWeek)} / ${money(V.dining.budgetWeek)}</div></div>
     <div class="num"><div class="nlabel">Week cap</div><div class="nval">${weekSynced ? money(weekVariableSpent) : "Sync needed"} / ${money(DATA.budgetPlan.overallWeeklyTarget)}</div></div>
     <div class="num"><div class="nlabel">Cap left</div><div class="nval ${weekSynced && weekVariableLeft>=0?'good':weekSynced?'bad':'warn'}">${weekSynced ? money(weekVariableLeft) : "—"}</div></div>
-    <div class="next">Next reset: ${resetDay} · ${DATA.budgetPlan.dataFreshnessNote || "Temporary stabilization plan."}</div>
+    <div class="next">Next reset: ${resetDay}</div>
   </div>`;
 const savingsTotal = DATA.savings.houseFund + DATA.savings.sofi + DATA.savings.robinhood + DATA.savings.ira;
 $("#sumGrid").innerHTML =
@@ -389,6 +391,7 @@ const accountRows = [
   ["Chase 3602", "CA Palmdale Home", A.palmdale3602],
   ["Chase 8072", "AZ Pegasus", A.azPegasus8072]
 ];
+$("#accountBalances").className = "acctgrid";
 $("#accountBalances").innerHTML = accountRows.map(([name,purpose,balance]) =>
   `<div class="acctrow"><div class="acctname">${name}<span class="acctpurpose">${purpose}</span></div><div class="acctbal ${balance==null?'warn':balance<500?'warn':'good'}">${money(balance)}</div></div>`
 ).join("");
