@@ -14,17 +14,18 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Sat Aug 15, 2026 · 1:11 PM",
+  updated: "Mon Aug 17, 2026 · 1:53 AM UTC",
 
-  wandaMessage: "Stabilization week: Amex 83007 is capped at $300. Dining is over target — choose groceries/home food until Sunday.",
+  wandaMessage: "New budget week: $380 variable target resets Sunday. Account data needs updates before spending confidence is high.",
 
   budgetPlan: {
-    status: "Stabilization · Amex reset",
+    status: "Budget-only · account updates needed",
     weekStarts: "Sunday",
     rollover: false,
-    overallWeeklyTarget: 300,
-    combinedFoodTarget: 200,
-    lastSynced: null
+    overallWeeklyTarget: 380,
+    combinedFoodTarget: 250,
+    lastSynced: "2026-08-16",
+    dataFreshnessNote: "No transaction update: Chase 3222 and Amex 83007 since Aug 13; Chase 3235 since Aug 11; Chase 1969 since Aug 3."
   },
 
   goals: [
@@ -61,11 +62,11 @@ const DATA = {
     // Approved Sunday-reset weekly targets. null spentWeek means the dashboard snapshot
     // has not been synced yet; never display a misleading $0 in that case.
     variable: {
-      dining:    { spentWeek: 161.98, budgetWeek: 75,  spentMonth: 441.20, budgetMonth: null },
-      groceries: { spentWeek: 138.42, budgetWeek: 125, spentMonth: 379.17, budgetMonth: null },
-      shopping:  { spentWeek: 174.72, budgetWeek: 25,  spentMonth: 227.20, budgetMonth: null },
-      gas:       { spentWeek: 0,      budgetWeek: 50,  spentMonth: 141.15, budgetMonth: null },
-      other:     { spentWeek: 21.01,  budgetWeek: 25,  spentMonth: 79.38,  budgetMonth: null }
+      dining:    { spentWeek: null, budgetWeek: 125, spentMonth: 441.20, budgetMonth: null },
+      groceries: { spentWeek: null, budgetWeek: 125, spentMonth: 379.17, budgetMonth: null },
+      shopping:  { spentWeek: null, budgetWeek: 25,  spentMonth: 227.20, budgetMonth: null },
+      gas:       { spentWeek: null, budgetWeek: 75,  spentMonth: 141.15, budgetMonth: null },
+      other:     { spentWeek: null, budgetWeek: 30,  spentMonth: 79.38,  budgetMonth: null }
     }
   },
 
@@ -88,7 +89,8 @@ const DATA = {
       { text: "Take pictures of the Toyota Prius after detailing", done: true },
       { text: "Post the Toyota Prius online for sale", done: true },
       { text: "Tyler: See how to get the benefits card for Priscilla", done: false },
-      { text: "Both: Keep Amex 83007 under the $300 weekly cap; no more dining/takeout until Sunday", done: false }
+      { text: "Both: Keep variable spending within the $380 Sunday-reset weekly budget", done: false },
+      { text: "Tyler: Update Chase 3222 and Amex 83007 account activity since Aug 13", done: false }
     ],
     month: [
       { text: "Sell the Toyota Prius", done: false },
@@ -310,18 +312,21 @@ const hr = new Date().getHours();
 $("#greet").textContent = hr<12?"Good morning":hr<18?"Good afternoon":"Good evening";
 $("#wandaMsg").textContent = DATA.wandaMessage||"";
 const diningSynced = V.dining.spentWeek != null;
-const dLeft = diningSynced ? V.dining.budgetWeek - V.dining.spentWeek : null;
 const variableKeys = ["dining", "groceries", "shopping", "gas", "other"];
-const weekVariableSpent = variableKeys.reduce((sum,k)=>sum + (V[k].spentWeek || 0), 0);
-const weekVariableLeft = DATA.budgetPlan.overallWeeklyTarget - weekVariableSpent;
+const weekSynced = variableKeys.every(k => V[k].spentWeek != null);
+const dLeft = diningSynced ? V.dining.budgetWeek - V.dining.spentWeek : null;
+const weekVariableSpent = weekSynced ? variableKeys.reduce((sum,k)=>sum + V[k].spentWeek, 0) : null;
+const weekVariableLeft = weekSynced ? DATA.budgetPlan.overallWeeklyTarget - weekVariableSpent : null;
 const resetDay = DATA.budgetPlan.weekStarts || "Sunday";
-const foodState = dLeft < 0 ? "red" : dLeft <= 25 ? "yellow" : "green";
-const foodAnswer = foodState === "green" ? "YES" : foodState === "yellow" ? "CAREFUL" : "NO";
-const foodReason = foodState === "red"
-  ? "Dining is over target. Choose groceries or home food until reset."
-  : foodState === "yellow"
-    ? "Small/simple food only — dining is almost used up."
-    : "Okay if it stays inside the weekly cap.";
+const foodState = !diningSynced ? "yellow" : dLeft < 0 ? "red" : dLeft <= 25 ? "yellow" : "green";
+const foodAnswer = !diningSynced ? "CHECK" : foodState === "green" ? "YES" : foodState === "yellow" ? "CAREFUL" : "NO";
+const foodReason = !diningSynced
+  ? "Budget reset, but account activity has not updated. Keep spending conservative until synced."
+  : foodState === "red"
+    ? "Dining is over target. Choose groceries or home food until reset."
+    : foodState === "yellow"
+      ? "Small/simple food only — dining is almost used up."
+      : "Okay if it stays inside the weekly cap.";
 const foodEl = $("#foodSignal");
 foodEl.classList.toggle("green", foodState === "green");
 foodEl.classList.toggle("yellow", foodState === "yellow");
@@ -333,13 +338,13 @@ foodEl.innerHTML = `
   </div>
   <div class="numbers">
     <div class="num"><div class="nlabel">Dining</div><div class="nval">${money(V.dining.spentWeek)} / ${money(V.dining.budgetWeek)}</div></div>
-    <div class="num"><div class="nlabel">Amex cap</div><div class="nval">${money(weekVariableSpent)} / ${money(DATA.budgetPlan.overallWeeklyTarget)}</div></div>
-    <div class="num"><div class="nlabel">Cap left</div><div class="nval ${weekVariableLeft>=0?'good':'bad'}">${money(weekVariableLeft)}</div></div>
-    <div class="next">Next reset: ${resetDay} · This is a temporary stabilization plan.</div>
+    <div class="num"><div class="nlabel">Week cap</div><div class="nval">${weekSynced ? money(weekVariableSpent) : "Sync needed"} / ${money(DATA.budgetPlan.overallWeeklyTarget)}</div></div>
+    <div class="num"><div class="nlabel">Cap left</div><div class="nval ${weekSynced && weekVariableLeft>=0?'good':weekSynced?'bad':'warn'}">${weekSynced ? money(weekVariableLeft) : "—"}</div></div>
+    <div class="next">Next reset: ${resetDay} · ${DATA.budgetPlan.dataFreshnessNote || "Temporary stabilization plan."}</div>
   </div>`;
 const savingsTotal = DATA.savings.houseFund + DATA.savings.sofi + DATA.savings.robinhood + DATA.savings.ira;
 $("#sumGrid").innerHTML =
-  tile("Amex cap left · week", money(weekVariableLeft), weekVariableLeft>=0?"good":"bad", "spent "+money(weekVariableSpent)+" / "+money(DATA.budgetPlan.overallWeeklyTarget)) +
+  tile("Week cap left", weekSynced?money(weekVariableLeft):"Sync needed", weekSynced?(weekVariableLeft>=0?"good":"bad"):"warn", weekSynced ? "spent "+money(weekVariableSpent)+" / "+money(DATA.budgetPlan.overallWeeklyTarget) : "account updates needed") +
   tile("Dining left · week", diningSynced?money(dLeft):"Sync needed", diningSynced?(dLeft>=0?"good":"bad"):"warn", "target "+money(V.dining.budgetWeek)) +
   tile("Cash flow · month", (cfNet>=0?"+":"")+money(cfNet), cfNet>=0?"good":"bad", "bank in vs out");
 function tile(lbl,big,cls,sub){ return `<div class="sumtile"><div class="lbl">${lbl}</div><div class="big ${cls}">${big}</div><div class="sub">${sub}</div></div>`; }
