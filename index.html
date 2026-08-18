@@ -14,7 +14,7 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Tue Aug 18, 2026 · 1:17 AM UTC",
+  updated: "Tue Aug 18, 2026 · 3:01 PM UTC",
 
   wandaMessage: "Goal reminder: study for the real estate license so we can sell the CA Palmdale home and stabilize cash flow.",
 
@@ -92,22 +92,21 @@ const DATA = {
     note: ""
   },
 
+  completedTasksTotal: 4,
+
   tasks: {
     day: [],
     week: [
       { text: "Clean home", done: false },
       { text: "Study real estate", done: false },
       { text: "Call AZ Tamer for TPT license", done: false },
-      { text: "Schedule the Toyota Prius for Saturday morning car detailing", done: true },
-      { text: "Take pictures of the Toyota Prius after detailing", done: true },
-      { text: "Post the Toyota Prius online for sale", done: true },
       { text: "Tyler: See how to get the benefits card for Priscilla", done: false },
       { text: "Both: Keep variable spending within the $380 Sunday-reset weekly budget", done: false },
-      { text: "Tyler: Updated Chase 3222, 1969, 3602, and Amex balances", done: true },
       { text: "Both: Calm down on eating out — keep Dining/Takeout under $125 this week", done: false },
       { text: "Tyler: Look out for insurance email and mortgage email about insurance cancellation notices", done: false },
       { text: "Tyler: Research where to buy tires for the 2025 Hyundai Santa Fe", done: false },
-      { text: "Tyler: Find where to do an oil change for the 2025 Hyundai Santa Fe", done: false }
+      { text: "Tyler: Find where to do an oil change for the 2025 Hyundai Santa Fe", done: false },
+      { text: "Tyler: Call or log in to the Bullhead City electric company and water department because the payment did not go through", done: false }
     ],
     month: [
       { text: "Sell the Toyota Prius", done: false },
@@ -264,6 +263,7 @@ const DATA = {
   .dots { position:absolute; bottom:2.2vh; left:0; right:0; display:flex; justify-content:center; gap:1.2vh; z-index:10; }
   .dots span { width:1.3vh; height:1.3vh; border-radius:50%; background:#5a2428; padding:1vh; background-clip:content-box; cursor:pointer; }
   .dots span.on { background:#fbe9e9; background-clip:content-box; }
+  .completedtotal { position:absolute; bottom:2vh; left:2.5vw; font-size:1.7vh; color:#7a4a4d; z-index:5; }
   .updated { position:absolute; bottom:2vh; right:2.5vw; font-size:1.7vh; color:#7a4a4d; z-index:5; }
 </style>
 </head>
@@ -328,6 +328,7 @@ const DATA = {
 </section>
 
 <div class="dots"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+<div class="completedtotal">Completed tasks: <span id="completedTaskTotal"></span></div>
 <div class="updated">Updated <span id="upd"></span></div>
 
 <script>
@@ -499,6 +500,7 @@ $("#calTaskRows").innerHTML = wkTasks.length
   : "<li style='list-style:none;color:#7a4a4d;font-size:2.2vh'>No tasks this week</li>";
 
 $("#upd").textContent = DATA.updated;
+$("#completedTaskTotal").textContent = DATA.completedTasksTotal ?? allTasks.filter(t=>t.done).length;
 
 /* ---- clock + cycling ---- */
 function tick(){ const t=new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
