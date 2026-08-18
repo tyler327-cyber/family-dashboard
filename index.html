@@ -14,7 +14,7 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Tue Aug 18, 2026 · 1:11 AM UTC",
+  updated: "Tue Aug 18, 2026 · 1:17 AM UTC",
 
   wandaMessage: "Goal reminder: study for the real estate license so we can sell the CA Palmdale home and stabilize cash flow.",
 
@@ -28,13 +28,13 @@ const DATA = {
     amexTotalBalance: 225.27,
     amexPending: 63.41,
     amexPosted: 2636.35,
-    dataFreshnessNote: "Updated from Tyler: Amex transactions through Aug 17; 3222 and 1969 updated through Aug 17.",
+    dataFreshnessNote: "Updated from Tyler: Palmdale has $1,666.34 expected bookings and $540 cleaner payouts planned.",
     accountBalances: {
       personal3222: 2458.73,
       azRamar1969: 461.07,
       palmdale3602: 3149.77,
-      palmdaleExpectedBooking: 827.42,
-      palmdaleCleanerDue: 360,
+      palmdaleExpectedBooking: 1666.34,
+      palmdaleCleanerDue: 540,
       easyLaunch3235: 4641.63,
       easyLaunch1130: 14.91,
       azPegasus8072: 2450
@@ -388,7 +388,7 @@ const accountRows = [
   ["Chase 3222", "Main Joint account", A.personal3222],
   ["Chase 1969", "AZ Ramar", A.azRamar1969],
   ["Chase 3235", "Easy Launch Services", A.easyLaunch3235],
-  ["Chase 3602", "CA Palmdale Home", A.palmdale3602],
+  ["Chase 3602", `CA Palmdale · +${money((A.palmdaleExpectedBooking||0) - (A.palmdaleCleanerDue||0))} planned`, A.palmdale3602],
   ["Chase 8072", "AZ Pegasus", A.azPegasus8072]
 ];
 $("#accountBalances").className = "acctgrid";
