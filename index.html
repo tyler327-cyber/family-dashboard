@@ -14,7 +14,7 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Tue Aug 18, 2026 · 7:47 PM MST",
+  updated: "Thu Aug 20, 2026 · 3:20 PM UTC",
 
   wandaMessage: "Goal reminder: study for the real estate license so we can sell the CA Palmdale home and stabilize cash flow.",
 
@@ -95,18 +95,20 @@ const DATA = {
   completedTasksTotal: 4,
 
   tasks: {
-    day: [],
+    day: [
+      { text: "Tyler: Submit files to support the Capital One dispute this week", done: false },
+      { text: "Tyler: Call or log in to the Bullhead City electric company and water department because the payment did not go through", done: false },
+      { text: "Tyler: Look out for insurance email and mortgage email about insurance cancellation notices", done: false },
+      { text: "Tyler: Call AZ Tamer for TPT license", done: false },
+      { text: "Tyler: Study real estate", done: false },
+      { text: "Priscilla: Clean home", done: false },
+      { text: "Priscilla: Research where to buy tires for the 2025 Hyundai Santa Fe", done: false },
+      { text: "Priscilla: Find where to do an oil change for the 2025 Hyundai Santa Fe", done: false }
+    ],
     week: [
-      { text: "Clean home", done: false },
-      { text: "Study real estate", done: false },
-      { text: "Call AZ Tamer for TPT license", done: false },
       { text: "Tyler: See how to get the benefits card for Priscilla", done: false },
       { text: "Both: Keep variable spending within the $380 Sunday-reset weekly budget", done: false },
-      { text: "Both: Calm down on eating out — keep Dining/Takeout under $125 this week", done: false },
-      { text: "Tyler: Look out for insurance email and mortgage email about insurance cancellation notices", done: false },
-      { text: "Tyler: Research where to buy tires for the 2025 Hyundai Santa Fe", done: false },
-      { text: "Tyler: Find where to do an oil change for the 2025 Hyundai Santa Fe", done: false },
-      { text: "Tyler: Call or log in to the Bullhead City electric company and water department because the payment did not go through", done: false }
+      { text: "Both: Calm down on eating out — keep Dining/Takeout under $125 this week", done: false }
     ],
     month: [
       { text: "Sell the Toyota Prius", done: false },
@@ -232,14 +234,15 @@ const DATA = {
   .savetotal b { color:#3fb950; font-size:3.4vh; }
 
   /* TASKS */
-  .taskgroups { display:grid; grid-template-columns:repeat(3,1fr); gap:2.2vw; flex:1; min-height:0; }
-  .tgroup { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2.6vh; display:flex; flex-direction:column; }
+  .taskgroups { display:grid; grid-template-columns:1.15fr .95fr .9fr; gap:1.5vw; flex:1; min-height:0; overflow:hidden; }
+  .tgroup { background:#2a0d10; border:1px solid #4a1a1f; border-radius:18px; padding:2vh; display:flex; flex-direction:column; min-height:0; }
   .tgtitle { display:flex; justify-content:space-between; align-items:baseline; font-size:2.8vh; font-weight:600; color:#ff7a8a; }
   .tgpct { font-size:2.6vh; color:#c98b8b; font-variant-numeric:tabular-nums; } .tgpct.good { color:#3fb950; }
   .tgbar { height:1.4vh; background:#3a1418; border-radius:99px; overflow:hidden; margin:1.2vh 0 2vh; }
   .tgbar > div { height:100%; background:#3fb950; border-radius:99px; }
-  .tgitems { list-style:none; } .tgitems li { display:flex; align-items:center; gap:1vw; font-size:2.6vh; padding:1vh 0; }
-  .tbox { width:3vh; height:3vh; border:.3vh solid #5a2428; border-radius:.7vh; flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-size:2vh; }
+  .tgitems { list-style:none; overflow:auto; padding-right:.4vw; }
+  .tgitems li { display:flex; align-items:flex-start; gap:.8vw; font-size:clamp(1.75vh, 2vw, 2.25vh); line-height:1.2; padding:.65vh 0; }
+  .tbox { width:2.5vh; height:2.5vh; border:.25vh solid #5a2428; border-radius:.6vh; flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-size:1.7vh; margin-top:.15vh; }
   .tgitems .done { color:#7a4a4d; text-decoration:line-through; } .tgitems .done .tbox { border-color:#238636; color:#3fb950; }
   .tgempty { color:#7a4a4d; font-size:2.3vh; margin-top:1vh; }
 
