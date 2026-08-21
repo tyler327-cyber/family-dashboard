@@ -14,7 +14,7 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Fri Aug 21, 2026 · 4:20 AM UTC",
+  updated: "Thu Aug 20, 2026 · 10:46 PM MST",
 
   wandaMessage: "Goal reminder: study for the real estate license so we can sell the CA Palmdale home and stabilize cash flow.",
 
@@ -22,13 +22,14 @@ const DATA = {
     status: "Current week · cash protected",
     weekStarts: "Sunday",
     rollover: false,
-    overallWeeklyTarget: 380,
+    overallWeeklyTarget: 320,
+    gasBudgetMode: "essential-tracked-separately",
     combinedFoodTarget: 250,
     lastSynced: "2026-08-17",
     amexTotalBalance: 526.45,
     amexPending: 147.31,
     amexPosted: 2982.38,
-    dataFreshnessNote: "Updated from Tyler: 3602 transactions added; next Palmdale cleaners still planned.",
+    dataFreshnessNote: "Updated from Tyler: controllable budget excludes gas; gas is tracked separately as essential transportation.",
     accountBalances: {
       personal3222: 1087.98,
       azRamar1969: 270.07,
@@ -75,10 +76,10 @@ const DATA = {
     // Approved Sunday-reset weekly targets. null spentWeek means the dashboard snapshot
     // has not been synced yet; never display a misleading $0 in that case.
     variable: {
-      dining:    { spentWeek: 110.72, budgetWeek: 125, spentMonth: 551.92, budgetMonth: null },
-      groceries: { spentWeek: 158.15, budgetWeek: 125, spentMonth: 537.32, budgetMonth: null },
-      shopping:  { spentWeek: 113.44, budgetWeek: 25,  spentMonth: 340.64, budgetMonth: null },
-      gas:       { spentWeek: 71.03,  budgetWeek: 75,  spentMonth: 212.18, budgetMonth: null },
+      dining:    { spentWeek: 110.72, budgetWeek: 90,  spentMonth: 551.92, budgetMonth: null },
+      groceries: { spentWeek: 158.15, budgetWeek: 160, spentMonth: 537.32, budgetMonth: null },
+      shopping:  { spentWeek: 113.44, budgetWeek: 40,  spentMonth: 340.64, budgetMonth: null },
+      gas:       { spentWeek: 71.03,  budgetWeek: null, spentMonth: 212.18, budgetMonth: null },
       other:     { spentWeek: 45.00, budgetWeek: 30,  spentMonth: 124.38, budgetMonth: null }
     }
   },
@@ -105,8 +106,8 @@ const DATA = {
     ],
     week: [
       { text: "Tyler: See how to get the benefits card for Priscilla", done: false },
-      { text: "Both: Keep variable spending within the $380 Sunday-reset weekly budget", done: false },
-      { text: "Both: Calm down on eating out — keep Dining/Takeout under $125 this week", done: false }
+      { text: "Both: Keep controllable spending within the $320 Sunday-reset budget; gas is tracked separately", done: false },
+      { text: "Both: Calm down on eating out — keep Dining/Takeout under $90 this week", done: false }
     ],
     month: [
       { text: "Sell the Toyota Prius", done: false },
@@ -346,7 +347,8 @@ const hr = new Date().getHours();
 $("#greet").textContent = hr<12?"Good morning":hr<18?"Good afternoon":"Good evening";
 $("#wandaMsg").textContent = DATA.wandaMessage||"";
 const diningSynced = V.dining.spentWeek != null;
-const variableKeys = ["dining", "groceries", "shopping", "gas", "other"];
+const variableKeys = ["dining", "groceries", "shopping", "other"];
+const gasSynced = V.gas.spentWeek != null;
 const weekSynced = variableKeys.every(k => V[k].spentWeek != null);
 const dLeft = diningSynced ? V.dining.budgetWeek - V.dining.spentWeek : null;
 const weekVariableSpent = weekSynced ? variableKeys.reduce((sum,k)=>sum + V[k].spentWeek, 0) : null;
@@ -375,14 +377,14 @@ foodEl.innerHTML = `
   </div>
   <div class="numbers">
     <div class="num"><div class="nlabel">Dining</div><div class="nval">${money(V.dining.spentWeek)} / ${money(V.dining.budgetWeek)}</div></div>
-    <div class="num"><div class="nlabel">Week cap</div><div class="nval">${weekSynced ? money(weekVariableSpent) : "Sync needed"} / ${money(DATA.budgetPlan.overallWeeklyTarget)}</div></div>
+    <div class="num"><div class="nlabel">Control cap</div><div class="nval">${weekSynced ? money(weekVariableSpent) : "Sync needed"} / ${money(DATA.budgetPlan.overallWeeklyTarget)}</div></div>
     <div class="num"><div class="nlabel">Cap left</div><div class="nval ${weekSynced && weekVariableLeft>=0?'good':weekSynced?'bad':'warn'}">${weekSynced ? money(weekVariableLeft) : "—"}</div></div>
     <div class="next">Next reset: ${resetDay}</div>
   </div>`;
 const savingsTotal = DATA.savings.houseFund + DATA.savings.sofi + DATA.savings.robinhood + DATA.savings.ira;
 $("#sumGrid").innerHTML =
-  tile("Week cap left", weekSynced?money(weekVariableLeft):"Sync needed", weekSynced?(weekVariableLeft>=0?"good":"bad"):"warn", weekSynced ? "spent "+money(weekVariableSpent)+" / "+money(DATA.budgetPlan.overallWeeklyTarget) : "account updates needed") +
-  tile("Dining left · week", diningSynced?money(dLeft):"Sync needed", diningSynced?(dLeft>=0?"good":"bad"):"warn", "spent "+money(V.dining.spentWeek)+" / "+money(V.dining.budgetWeek)) +
+  tile("Control cap left", weekSynced?money(weekVariableLeft):"Sync needed", weekSynced?(weekVariableLeft>=0?"good":"bad"):"warn", weekSynced ? "spent "+money(weekVariableSpent)+" / "+money(DATA.budgetPlan.overallWeeklyTarget) : "account updates needed") +
+  tile("Gas · essential", gasSynced?money(V.gas.spentWeek):"Sync needed", "warn", "tracked separately, not in cap") +
   tile("Amex balance", money(DATA.budgetPlan.amexTotalBalance), "warn", "pending "+money(DATA.budgetPlan.amexPending));
 function tile(lbl,big,cls,sub){ return `<div class="sumtile"><div class="lbl">${lbl}</div><div class="big ${cls}">${big}</div><div class="sub">${sub}</div></div>`; }
 const A = DATA.budgetPlan.accountBalances || {};
@@ -420,9 +422,9 @@ $("#colCashflow").innerHTML =
 function expRows(period){ // period = 'Week' or 'Month'
   const sp = period==='Week'?'spentWeek':'spentMonth', bd = period==='Week'?'budgetWeek':'budgetMonth';
   let html = catRow("Fixed", Fx[sp], Fx[period==='Week'?'weekly':'monthly'], "#8b6a3a");
-  const order = [["Dining","dining"],["Groceries","groceries"],["Shopping","shopping"],["Gas","gas"],["Other","other"]];
+  const order = [["Dining","dining"],["Groceries","groceries"],["Shopping","shopping"],["Gas · essential","gas"],["Other","other"]];
   for(const [name,key] of order){ const c=V[key];
-    html += catRow(name, c[sp], c[bd], null, period==='Month'); }
+    html += catRow(name, c[sp], c[bd], null, period==='Month' || key==='gas'); }
   return html;
 }
 function catRow(name, spent, budget, fixedCol, noCap){
