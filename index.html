@@ -14,7 +14,7 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Sun Aug 23, 2026 · 10:11 PM MST",
+  updated: "Sun Aug 23, 2026 · 10:15 PM MST",
 
   wandaMessage: "Goal reminder: study for the real estate license so we can sell the CA Palmdale home and stabilize cash flow.",
 
@@ -25,11 +25,11 @@ const DATA = {
     overallWeeklyTarget: 320,
     gasBudgetMode: "essential-tracked-separately",
     combinedFoodTarget: 250,
-    lastSynced: "2026-08-17",
+    lastSynced: "2026-08-23",
     amexTotalBalance: 526.45,
     amexPending: 147.31,
     amexPosted: 2982.38,
-    dataFreshnessNote: "Updated from Tyler: Chase balances refreshed; visible total available balance $11,024.61.",
+    dataFreshnessNote: "Updated from Tyler: multi-account transactions added; 8072 balance $2,274.50; weekly controllable spend reset Sunday.",
     accountBalances: {
       personal3222: 965.05,
       azRamar1969: 255.07,
@@ -38,7 +38,7 @@ const DATA = {
       palmdaleCleanerDue: 360,
       easyLaunch3235: 6180.67,
       easyLaunch1130: 14.91,
-      azPegasus8072: 2450
+      azPegasus8072: 2274.50
     }
   },
 
@@ -76,11 +76,11 @@ const DATA = {
     // Approved Sunday-reset weekly targets. null spentWeek means the dashboard snapshot
     // has not been synced yet; never display a misleading $0 in that case.
     variable: {
-      dining:    { spentWeek: 153.63, budgetWeek: 90,  spentMonth: 594.83, budgetMonth: null },
-      groceries: { spentWeek: 185.61, budgetWeek: 160, spentMonth: 564.78, budgetMonth: null },
-      shopping:  { spentWeek: 203.40, budgetWeek: 40,  spentMonth: 430.60, budgetMonth: null },
-      gas:       { spentWeek: 71.03,  budgetWeek: null, spentMonth: 212.18, budgetMonth: null },
-      other:     { spentWeek: 50.66, budgetWeek: 30,  spentMonth: 130.04, budgetMonth: null }
+      dining:    { spentWeek: 0, budgetWeek: 90,  spentMonth: 594.83, budgetMonth: null },
+      groceries: { spentWeek: 0, budgetWeek: 160, spentMonth: 564.78, budgetMonth: null },
+      shopping:  { spentWeek: 0, budgetWeek: 40,  spentMonth: 430.60, budgetMonth: null },
+      gas:       { spentWeek: 0, budgetWeek: null, spentMonth: 212.18, budgetMonth: null },
+      other:     { spentWeek: 0, budgetWeek: 30,  spentMonth: 130.04, budgetMonth: null }
     }
   },
 
