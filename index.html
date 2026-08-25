@@ -14,7 +14,7 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Mon Aug 24, 2026 · 2:01 PM UTC",
+  updated: "Mon Aug 24, 2026 · 9:45 PM MST",
 
   wandaMessage: "Goal reminder: study for the real estate license so we can sell the CA Palmdale home and stabilize cash flow.",
 
@@ -25,18 +25,18 @@ const DATA = {
     overallWeeklyTarget: 320,
     gasBudgetMode: "essential-tracked-separately",
     combinedFoodTarget: 250,
-    lastSynced: "2026-08-23",
-    amexTotalBalance: 1000,
+    lastSynced: "2026-08-24",
+    amexTotalBalance: 854.46,
     amexPending: null,
-    amexPosted: 2982.38,
-    dataFreshnessNote: "Updated from Tyler: Amex balance about $1,000; current-week controllable spend $64.22 of $320.",
+    amexPosted: 673.76,
+    dataFreshnessNote: "Updated from Tyler: balances refreshed; Amex total $854.46, statement $673.76 due Sep 16, current-week controllable spend $364.24 of $320.",
     accountBalances: {
       personal3222: 965.05,
-      azRamar1969: 255.07,
-      palmdale3602: 3608.91,
+      azRamar1969: 179.31,
+      palmdale3602: 3548.91,
       palmdaleExpectedBooking: 0,
       palmdaleCleanerDue: 360,
-      easyLaunch3235: 6180.67,
+      easyLaunch3235: 6170.62,
       easyLaunch1130: 14.91,
       azPegasus8072: 2274.50
     }
@@ -76,10 +76,10 @@ const DATA = {
     // Approved Sunday-reset weekly targets. null spentWeek means the dashboard snapshot
     // has not been synced yet; never display a misleading $0 in that case.
     variable: {
-      dining:    { spentWeek: 0, budgetWeek: 90,  spentMonth: 594.83, budgetMonth: null },
-      groceries: { spentWeek: 39.22, budgetWeek: 160, spentMonth: 637.94, budgetMonth: null },
-      shopping:  { spentWeek: 0, budgetWeek: 40,  spentMonth: 430.60, budgetMonth: null },
-      gas:       { spentWeek: 0, budgetWeek: null, spentMonth: 212.18, budgetMonth: null },
+      dining:    { spentWeek: 12.67, budgetWeek: 90,  spentMonth: 607.50, budgetMonth: null },
+      groceries: { spentWeek: 270.57, budgetWeek: 160, spentMonth: 869.29, budgetMonth: null },
+      shopping:  { spentWeek: 56.00, budgetWeek: 40,  spentMonth: 486.60, budgetMonth: null },
+      gas:       { spentWeek: 56.04, budgetWeek: null, spentMonth: 268.22, budgetMonth: null },
       other:     { spentWeek: 25.00, budgetWeek: 30,  spentMonth: 155.04, budgetMonth: null }
     }
   },
@@ -385,7 +385,7 @@ const savingsTotal = DATA.savings.houseFund + DATA.savings.sofi + DATA.savings.r
 $("#sumGrid").innerHTML =
   tile("Control cap left", weekSynced?money(weekVariableLeft):"Sync needed", weekSynced?(weekVariableLeft>=0?"good":"bad"):"warn", weekSynced ? "spent "+money(weekVariableSpent)+" / "+money(DATA.budgetPlan.overallWeeklyTarget) : "account updates needed") +
   tile("Gas · essential", gasSynced?money(V.gas.spentWeek):"Sync needed", "warn", "tracked separately, not in cap") +
-  tile("Amex balance", money(DATA.budgetPlan.amexTotalBalance), "warn", "pending "+money(DATA.budgetPlan.amexPending));
+  tile("Amex balance", money(DATA.budgetPlan.amexTotalBalance), "warn", DATA.budgetPlan.amexPending == null ? "statement "+money(DATA.budgetPlan.amexPosted)+" due Sep 16" : "pending "+money(DATA.budgetPlan.amexPending));
 function tile(lbl,big,cls,sub){ return `<div class="sumtile"><div class="lbl">${lbl}</div><div class="big ${cls}">${big}</div><div class="sub">${sub}</div></div>`; }
 const A = DATA.budgetPlan.accountBalances || {};
 const accountRows = [
