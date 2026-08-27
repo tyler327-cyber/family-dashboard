@@ -14,31 +14,33 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Thu Aug 27, 2026 · 2:00 PM UTC",
+  updated: "Thu Aug 27, 2026 · cash triage update",
 
   wandaMessage: "Goal reminder: study for the real estate license so we can sell the CA Palmdale home and stabilize cash flow.",
 
   budgetPlan: {
-    status: "Current week · cash protected",
+    status: "Rent + AZ mortgage protected · no dining out",
     weekStarts: "Sunday",
     rollover: false,
     overallWeeklyTarget: 320,
     gasBudgetMode: "essential-tracked-separately",
     combinedFoodTarget: 250,
-    lastSynced: "2026-08-25",
-    amexTotalBalance: 949.23,
+    lastSynced: "2026-08-27",
+    foodSignalOverride: "NO",
+    foodSignalReason: "Cash is in triage: rent and AZ mortgage are protected, Amex was paid down, and dining/takeout should stay paused until Sunday.",
+    amexTotalBalance: 143.00,
     amexPending: null,
     amexPosted: 673.76,
-    dataFreshnessNote: "Updated from Tyler: 3602, 3235, and Amex Aug 25 activity added; controllable spending is $94.50 over plan.",
+    dataFreshnessNote: "Updated from Tyler: 8072 used for Amex and AZ Ramar bridge; no dining/takeout until Sunday even though Dining shows only $13 spent.",
     accountBalances: {
-      personal3222: 3357.26,
-      azRamar1969: 179.31,
+      personal3222: 2859.14,
+      azRamar1969: 1010.00,
       palmdale3602: 3368.91,
       palmdaleExpectedBooking: 0,
       palmdaleCleanerDue: 360,
-      easyLaunch3235: 6622.68,
+      easyLaunch3235: 7152.49,
       easyLaunch1130: 14.91,
-      azPegasus8072: 2274.50
+      azPegasus8072: 4.50
     }
   },
 
@@ -107,7 +109,7 @@ const DATA = {
     week: [
       { text: "Tyler: See how to get the benefits card for Priscilla", done: false },
       { text: "Both: Keep controllable spending within the $320 Sunday-reset budget; gas is tracked separately", done: false },
-      { text: "Both: Calm down on eating out — keep Dining/Takeout under $90 this week", done: false }
+      { text: "Both: No dining/takeout until Sunday — use groceries/work lunch supplies only", done: false }
     ],
     month: [
       { text: "Sell the Toyota Prius", done: false },
@@ -355,9 +357,10 @@ const weekVariableSpent = weekSynced ? variableKeys.reduce((sum,k)=>sum + V[k].s
 const weekVariableLeft = weekSynced ? DATA.budgetPlan.overallWeeklyTarget - weekVariableSpent : null;
 const resetDay = DATA.budgetPlan.weekStarts || "Sunday";
 const diningDisciplineNeeded = diningSynced && V.dining.spentWeek >= 40;
-const foodState = !diningSynced ? "yellow" : dLeft < 0 ? "red" : (dLeft <= 25 || diningDisciplineNeeded) ? "yellow" : "green";
-const foodAnswer = !diningSynced ? "CHECK" : foodState === "green" ? "YES" : foodState === "yellow" ? "CAREFUL" : "NO";
-const foodReason = !diningSynced
+const overrideAnswer = DATA.budgetPlan.foodSignalOverride;
+const foodState = overrideAnswer === "NO" ? "red" : !diningSynced ? "yellow" : dLeft < 0 ? "red" : (dLeft <= 25 || diningDisciplineNeeded) ? "yellow" : "green";
+const foodAnswer = overrideAnswer || (!diningSynced ? "CHECK" : foodState === "green" ? "YES" : foodState === "yellow" ? "CAREFUL" : "NO");
+const foodReason = DATA.budgetPlan.foodSignalReason || (!diningSynced
   ? "Budget reset, but account activity has not updated. Keep spending conservative until synced."
   : foodState === "red"
     ? "Dining is over target. Choose groceries or home food until reset."
@@ -365,7 +368,7 @@ const foodReason = !diningSynced
       ? "Taco Stand used about one-third of dining. Slow down and favor home food."
       : foodState === "yellow"
         ? "Small/simple food only — dining is almost used up."
-        : "Okay if it stays inside the weekly cap.";
+        : "Okay if it stays inside the weekly cap.");
 const foodEl = $("#foodSignal");
 foodEl.classList.toggle("green", foodState === "green");
 foodEl.classList.toggle("yellow", foodState === "yellow");
