@@ -14,125 +14,253 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Tue Sep 1, 2026 · 11:25 PM",
-
-  wandaMessage: "Start with the top few tasks, protect the budget, and keep building toward the house.",
-
-  budgetPlan: {
-    status: "Rent + AZ mortgage protected · no dining out",
-    weekStarts: "Sunday",
-    rollover: false,
-    overallWeeklyTarget: 320,
-    gasBudgetMode: "essential-tracked-separately",
-    combinedFoodTarget: 250,
-    lastSynced: "2026-08-31",
-    foodSignalOverride: "NO",
-    foodSignalReason: "Cash is in triage: rent and AZ mortgage are protected, Amex was paid down, and dining/takeout should stay paused until Sunday.",
-    amexTotalBalance: 409.00,
-    amexPending: null,
-    amexPosted: 673.76,
-    dataFreshnessNote: "Updated from Tyler: cleaner and Ms. Kin paid from 3235; Easy Launch is down to emergency-only cash around $529.",
-    accountBalances: {
-      personal3222: 2638.64,
-      azRamar1969: 995.69,
-      palmdale3602: 3318.91,
-      palmdaleExpectedBooking: 0,
-      palmdaleCleanerDue: 360,
-      easyLaunch3235: 529.00,
-      easyLaunch1130: 14.91,
-      azPegasus8072: 0
+  "updated": "Wed Sep 2, 2026 · 7:00 AM",
+  "wandaMessage": "Focus on the highest-impact tasks, keep spending controlled, and move one step closer to debt-free.",
+  "budgetPlan": {
+    "status": "Rent + AZ mortgage protected · no dining out",
+    "weekStarts": "Sunday",
+    "rollover": false,
+    "overallWeeklyTarget": 320,
+    "gasBudgetMode": "essential-tracked-separately",
+    "combinedFoodTarget": 250,
+    "lastSynced": "2026-09-02",
+    "foodSignalOverride": "NO",
+    "foodSignalReason": "Cash is in triage: rent and AZ mortgage are protected, Amex was paid down, and dining/takeout should stay paused until Sunday.",
+    "amexTotalBalance": 409,
+    "amexPending": null,
+    "amexPosted": 673.76,
+    "dataFreshnessNote": "Updated from Tyler: cleaner and Ms. Kin paid from 3235; Easy Launch is down to emergency-only cash around $529.",
+    "accountBalances": {
+      "personal3222": 2638.64,
+      "azRamar1969": 995.69,
+      "palmdale3602": 3318.91,
+      "palmdaleExpectedBooking": 0,
+      "palmdaleCleanerDue": 360,
+      "easyLaunch3235": 529,
+      "easyLaunch1130": 14.91,
+      "azPegasus8072": 0
     }
   },
-
-  goals: [
-    { emoji: "🏡", label: "Our house", note: "down payment" },
-    { emoji: "👶", label: "Family", note: "stable foundation" },
-    { emoji: "💳", label: "Debt-free", note: "one payment at a time" }
+  "goals": [
+    {
+      "emoji": "🏡",
+      "label": "Our house",
+      "note": "down payment"
+    },
+    {
+      "emoji": "👶",
+      "label": "Family",
+      "note": "stable foundation"
+    },
+    {
+      "emoji": "💳",
+      "label": "Debt-free",
+      "note": "one payment at a time"
+    }
   ],
-
-  personal: {
-    // INCOME, EXPENSES, CASHFLOW — each split week + month
-    income: {
-      week:  25.0,
-      month: 0,
-      items: [
-        { label: "Boeing (W2)", monthly: 0 },
-        { label: "Other", monthly: 0 }
+  "personal": {
+    "income": {
+      "week": 25.0,
+      "month": 0.0,
+      "items": [
+        {
+          "label": "Boeing (W2)",
+          "monthly": 0
+        },
+        {
+          "label": "Other",
+          "monthly": 0.0
+        }
       ]
     },
-    expenses: { week: 153.25, month: 0 },
-    cashflow: { weekIn: 25.0, weekOut: 50.0, monthIn: 0, monthOut: 0 }
-  },
-
-  business: {
-    easylaunch: { name: "Easy Launch Services", month: { income: 0, expenses: 0 } },
-    azramar:    { name: "AZ Ramar",             month: { income: 0, expenses: 0 } }
-  },
-
-  buckets: {
-    fixed: {
-      weekly: 900, monthly: 3600,
-      spentWeek: 50.0, spentMonth: 0,
-      items: ["Rent", "Electric", "Internet", "Phone", "Insurance", "Student Loan"]
+    "expenses": {
+      "week": 153.25,
+      "month": 0.0
     },
-    // Approved Sunday-reset weekly targets. null spentWeek means the dashboard snapshot
-    // has not been synced yet; never display a misleading $0 in that case.
-    variable: {
-      dining:    { spentWeek: 37.03, budgetWeek: 90,  spentMonth: 0, budgetMonth: null },
-      groceries: { spentWeek: 66.22, budgetWeek: 160, spentMonth: 0, budgetMonth: null },
-      shopping:  { spentWeek: 0, budgetWeek: 40,  spentMonth: 0, budgetMonth: null },
-      gas:       { spentWeek: 0, budgetWeek: null, spentMonth: 0, budgetMonth: null },
-      other:     { spentWeek: 0, budgetWeek: 30,  spentMonth: 0, budgetMonth: null }
+    "cashflow": {
+      "weekIn": 25.0,
+      "weekOut": 50.0,
+      "monthIn": 0.0,
+      "monthOut": 0.0
     }
   },
-
-  // Savings + investments — Tyler reports these balances manually
-  savings: {
-    houseFund: 0,
-    sofi:      0,
-    robinhood: 19552.44,
-    ira:       29420.05,
-    note: "Robinhood market value $19,552.44 · stocks/ETFs $14,653.72 · crypto $4,898.71 · updated Tue Sep 1, 2026 · 2:00 PM UTC"
+  "business": {
+    "easylaunch": {
+      "name": "Easy Launch Services",
+      "month": {
+        "income": 0.0,
+        "expenses": 0.0
+      }
+    },
+    "azramar": {
+      "name": "AZ Ramar",
+      "month": {
+        "income": 0.0,
+        "expenses": 0.0
+      }
+    }
   },
-
-  completedTasksTotal: 7,
-
-  tasks: {
-    day: [
-      { text: "Tyler: Submit files to support the Capital One dispute this week", done: false },
-      { text: "Tyler: Study real estate", done: false },
-      { text: "Tyler: Print Prius insurance and mail it to the DMV", done: false },
-      { text: "Tyler: Apply for the real estate license exam and submit 4 documents", done: false },
-      { text: "Tyler: Message Brandon first about calling him tomorrow before 7 PM", done: false },
-      { text: "Tyler: Call UCI Health insurance because the bill was sent to collections", done: false },
-      { text: "Tyler: Call dentist because they think coverage was missing, but coverage was active", done: false },
-      { text: "Tyler: Pay MemorialCare visit using the HSA card", done: false },
-      { text: "Tyler: Set up dentist appointment", done: false },
-      { text: "Priscilla: Clean home", done: false },
-      { text: "Priscilla: Research where to buy tires for the 2025 Hyundai Santa Fe", done: false },
-      { text: "Priscilla: Find where to do an oil change for the 2025 Hyundai Santa Fe", done: false }
+  "buckets": {
+    "fixed": {
+      "weekly": 900,
+      "monthly": 3600,
+      "spentWeek": 0.0,
+      "spentMonth": 0.0,
+      "items": [
+        "Rent",
+        "Electric",
+        "Internet",
+        "Phone",
+        "Insurance",
+        "Student Loan"
+      ]
+    },
+    "variable": {
+      "dining": {
+        "spentWeek": 37.03,
+        "budgetWeek": 90,
+        "spentMonth": 0.0,
+        "budgetMonth": null
+      },
+      "groceries": {
+        "spentWeek": 66.22,
+        "budgetWeek": 160,
+        "spentMonth": 0.0,
+        "budgetMonth": null
+      },
+      "shopping": {
+        "spentWeek": 0.0,
+        "budgetWeek": 40,
+        "spentMonth": 0.0,
+        "budgetMonth": null
+      },
+      "gas": {
+        "spentWeek": 0.0,
+        "budgetWeek": null,
+        "spentMonth": 0.0,
+        "budgetMonth": null
+      },
+      "other": {
+        "spentWeek": 50.0,
+        "budgetWeek": 30,
+        "spentMonth": 0.0,
+        "budgetMonth": null
+      }
+    }
+  },
+  "savings": {
+    "houseFund": 0,
+    "sofi": 0,
+    "robinhood": 19552.44,
+    "ira": 29420.05,
+    "note": "Robinhood market value $19,552.44 · stocks/ETFs $14,653.72 · crypto $4,898.71 · updated Tue Sep 1, 2026 · 2:00 PM UTC"
+  },
+  "completedTasksTotal": 7,
+  "tasks": {
+    "day": [
+      {
+        "text": "Tyler: Submit files to support the Capital One dispute this week",
+        "done": false
+      },
+      {
+        "text": "Tyler: Study real estate",
+        "done": false
+      },
+      {
+        "text": "Tyler: Print Prius insurance and mail it to the DMV",
+        "done": false
+      },
+      {
+        "text": "Tyler: Apply for the real estate license exam and submit 4 documents",
+        "done": false
+      },
+      {
+        "text": "Tyler: Message Brandon first about calling him tomorrow before 7 PM",
+        "done": false
+      },
+      {
+        "text": "Tyler: Call UCI Health insurance because the bill was sent to collections",
+        "done": false
+      },
+      {
+        "text": "Tyler: Call dentist because they think coverage was missing, but coverage was active",
+        "done": false
+      },
+      {
+        "text": "Tyler: Pay MemorialCare visit using the HSA card",
+        "done": false
+      },
+      {
+        "text": "Tyler: Set up dentist appointment",
+        "done": false
+      },
+      {
+        "text": "Priscilla: Clean home",
+        "done": false
+      },
+      {
+        "text": "Priscilla: Research where to buy tires for the 2025 Hyundai Santa Fe",
+        "done": false
+      },
+      {
+        "text": "Priscilla: Find where to do an oil change for the 2025 Hyundai Santa Fe",
+        "done": false
+      }
     ],
-    week: [
-      { text: "Tyler: Call Brandon tomorrow before 7 PM", done: false },
-      { text: "Tyler: Call David, Gator friend, tomorrow before 7 PM", done: false },
-      { text: "Tyler: See how to find a therapist", done: false },
-      { text: "Tyler: Put Pokémon cards up for sale on eBay or OfferUp", done: false },
-      { text: "Tyler: Get coin rolls, roll up coins, and see how much we have", done: false },
-      { text: "Tyler: Call TPT license office at end of week to check AZ Ramar status and whether a large payment, possibly $3k, is due", done: false },
-      { text: "Tyler: Pay Easy Launch state fee", done: false },
-      { text: "Tyler: See how to get the benefits card for Priscilla", done: false },
-      { text: "Both: Keep controllable spending within the $320 Sunday-reset budget; gas is tracked separately", done: false },
-      { text: "Both: No dining/takeout until Sunday — use groceries/work lunch supplies only", done: false }
+    "week": [
+      {
+        "text": "Tyler: Call Brandon tomorrow before 7 PM",
+        "done": false
+      },
+      {
+        "text": "Tyler: Call David, Gator friend, tomorrow before 7 PM",
+        "done": false
+      },
+      {
+        "text": "Tyler: See how to find a therapist",
+        "done": false
+      },
+      {
+        "text": "Tyler: Put Pokémon cards up for sale on eBay or OfferUp",
+        "done": false
+      },
+      {
+        "text": "Tyler: Get coin rolls, roll up coins, and see how much we have",
+        "done": false
+      },
+      {
+        "text": "Tyler: Call TPT license office at end of week to check AZ Ramar status and whether a large payment, possibly $3k, is due",
+        "done": false
+      },
+      {
+        "text": "Tyler: Pay Easy Launch state fee",
+        "done": false
+      },
+      {
+        "text": "Tyler: See how to get the benefits card for Priscilla",
+        "done": false
+      },
+      {
+        "text": "Both: Keep controllable spending within the $320 Sunday-reset budget; gas is tracked separately",
+        "done": false
+      },
+      {
+        "text": "Both: No dining/takeout until Sunday — use groceries/work lunch supplies only",
+        "done": false
+      }
     ],
-    month: [
-      { text: "Sell the Toyota Prius", done: false },
-      { text: "Tyler or Priscilla: Get AZ Ramar home estimate for replacing soffit and fascia", done: false }
+    "month": [
+      {
+        "text": "Sell the Toyota Prius",
+        "done": false
+      },
+      {
+        "text": "Tyler or Priscilla: Get AZ Ramar home estimate for replacing soffit and fascia",
+        "done": false
+      }
     ]
   },
-
-  events: [
-    { date: "2026-08-15", time: "7:00 AM", title: "Toyota Prius car detailing" }
-  ]
+  "events": []
 };
 /* ================= END WANDA DATA ========================= */
 </script>
