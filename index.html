@@ -14,9 +14,9 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  updated: "Wed Sep 2, 2026 · 6:12 AM UTC",
+  updated: "Tue Sep 1, 2026 · 11:25 PM",
 
-  wandaMessage: "Goal reminder: study for the real estate license so we can sell the CA Palmdale home and stabilize cash flow.",
+  wandaMessage: "Start with the top few tasks, protect the budget, and keep building toward the house.",
 
   budgetPlan: {
     status: "Rent + AZ mortgage protected · no dining out",
@@ -53,36 +53,36 @@ const DATA = {
   personal: {
     // INCOME, EXPENSES, CASHFLOW — each split week + month
     income: {
-      week:  2658.69,
-      month: 2658.69,
+      week:  25.0,
+      month: 0,
       items: [
-        { label: "Boeing (W2)", monthly: 2658.69 },
+        { label: "Boeing (W2)", monthly: 0 },
         { label: "Other", monthly: 0 }
       ]
     },
-    expenses: { week: 496.13, month: 3603.10 },
-    cashflow: { weekIn: 2658.69, weekOut: 608.69, monthIn: 2658.69, monthOut: 2943.69 }
+    expenses: { week: 153.25, month: 0 },
+    cashflow: { weekIn: 25.0, weekOut: 50.0, monthIn: 0, monthOut: 0 }
   },
 
   business: {
-    easylaunch: { name: "Easy Launch Services", month: { income: 2187.75, expenses: 8678.14 } },
-    azramar:    { name: "AZ Ramar",             month: { income: 0, expenses: 907.29 } }
+    easylaunch: { name: "Easy Launch Services", month: { income: 0, expenses: 0 } },
+    azramar:    { name: "AZ Ramar",             month: { income: 0, expenses: 0 } }
   },
 
   buckets: {
     fixed: {
       weekly: 900, monthly: 3600,
-      spentWeek: 0, spentMonth: 2335,
+      spentWeek: 50.0, spentMonth: 0,
       items: ["Rent", "Electric", "Internet", "Phone", "Insurance", "Student Loan"]
     },
     // Approved Sunday-reset weekly targets. null spentWeek means the dashboard snapshot
     // has not been synced yet; never display a misleading $0 in that case.
     variable: {
-      dining:    { spentWeek: 37.03, budgetWeek: 90,  spentMonth: 688.76, budgetMonth: null },
-      groceries: { spentWeek: 66.22, budgetWeek: 160, spentMonth: 1022.95, budgetMonth: null },
-      shopping:  { spentWeek: 0, budgetWeek: 40,  spentMonth: 495.73, budgetMonth: null },
-      gas:       { spentWeek: 0, budgetWeek: null, spentMonth: 327.20, budgetMonth: null },
-      other:     { spentWeek: 0, budgetWeek: 30,  spentMonth: 192.72, budgetMonth: null }
+      dining:    { spentWeek: 37.03, budgetWeek: 90,  spentMonth: 0, budgetMonth: null },
+      groceries: { spentWeek: 66.22, budgetWeek: 160, spentMonth: 0, budgetMonth: null },
+      shopping:  { spentWeek: 0, budgetWeek: 40,  spentMonth: 0, budgetMonth: null },
+      gas:       { spentWeek: 0, budgetWeek: null, spentMonth: 0, budgetMonth: null },
+      other:     { spentWeek: 0, budgetWeek: 30,  spentMonth: 0, budgetMonth: null }
     }
   },
 
