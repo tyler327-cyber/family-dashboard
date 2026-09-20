@@ -14,8 +14,8 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  "updated": "Sat Sep 19, 2026 · 7:00 AM",
-  "wandaMessage": "Good morning ❤️ Finance: $0 spent this week, $320 left in the Sunday budget. Today: Capital One files, Prius DMV insurance, real estate exam docs. 10 tasks this week. Small wins move us toward the house, kids, and debt-free goal.",
+  "updated": "Sun Sep 20, 2026 · 7:00 AM",
+  "wandaMessage": "Good morning ❤️ Finance: $0 spent so far this week, $320 left in the Sunday budget. Today: Capital One files, Prius DMV insurance, and real estate exam docs. 10 tasks this week. Small wins keep us moving toward the house, kids, and debt-free goal.",
   "budgetPlan": {
     "status": "1969 is negative · Amex rebuilt · dining/shopping freeze",
     "weekStarts": "Sunday",
@@ -23,13 +23,13 @@ const DATA = {
     "overallWeeklyTarget": 320,
     "gasBudgetMode": "essential-tracked-separately",
     "combinedFoodTarget": 250,
-    "lastSynced": "2026-09-19",
+    "lastSynced": "2026-09-20",
     "foodSignalOverride": "GOOD",
-    "foodSignalReason": "This week is still clean so far. Keep dining paused and use groceries/work lunch supplies.",
+    "foodSignalReason": "Sunday budget reset is clean so far. Keep dining paused and use groceries/work lunch supplies.",
     "amexTotalBalance": 2309,
     "amexPending": null,
     "amexPosted": 673.76,
-    "dataFreshnessNote": "Refreshed from Family Finances sheet on 2026-09-19; card payments and internal transfers excluded from spending.",
+    "dataFreshnessNote": "Refreshed from Family Finances sheet on 2026-09-20 via apps-script-webapp; card payments and internal transfers excluded from spending.",
     "accountBalances": {
       "personal3222": 2653.37,
       "azRamar1969": -68.19,
@@ -60,7 +60,7 @@ const DATA = {
   ],
   "personal": {
     "income": {
-      "week": 0.0,
+      "week": 0,
       "month": 5031.33,
       "items": [
         {
@@ -74,28 +74,28 @@ const DATA = {
       ]
     },
     "expenses": {
-      "week": 0.0,
-      "month": 7638.8
+      "week": 0,
+      "month": 7918.25
     },
     "cashflow": {
-      "weekIn": 0.0,
-      "weekOut": 0.0,
-      "monthIn": 5001.34,
-      "monthOut": 6889.48
+      "weekIn": 0,
+      "weekOut": 0,
+      "monthIn": 5031.33,
+      "monthOut": 8809.82
     }
   },
   "business": {
     "easylaunch": {
       "name": "Easy Launch Services",
       "month": {
-        "income": 0.0,
-        "expenses": 6452.51
+        "income": 3076.18,
+        "expenses": 1374.3
       }
     },
     "azramar": {
       "name": "AZ Ramar",
       "month": {
-        "income": 0.0,
+        "income": 0,
         "expenses": 1063.88
       }
     }
@@ -104,8 +104,8 @@ const DATA = {
     "fixed": {
       "weekly": 900,
       "monthly": 3600,
-      "spentWeek": 0.0,
-      "spentMonth": 5659.02,
+      "spentWeek": 0,
+      "spentMonth": 5729.47,
       "items": [
         "Rent",
         "Electric",
@@ -117,33 +117,33 @@ const DATA = {
     },
     "variable": {
       "dining": {
-        "spentWeek": 0.0,
+        "spentWeek": 0,
         "budgetWeek": 90,
         "spentMonth": 541.0,
         "budgetMonth": null
       },
       "groceries": {
-        "spentWeek": 0.0,
+        "spentWeek": 0,
         "budgetWeek": 160,
         "spentMonth": 250.91,
         "budgetMonth": null
       },
       "shopping": {
-        "spentWeek": 0.0,
+        "spentWeek": 0,
         "budgetWeek": 40,
         "spentMonth": 273.89,
         "budgetMonth": null
       },
       "gas": {
-        "spentWeek": 0.0,
+        "spentWeek": 0,
         "budgetWeek": null,
         "spentMonth": 303.22,
         "budgetMonth": null
       },
       "other": {
-        "spentWeek": 0.0,
+        "spentWeek": 0,
         "budgetWeek": 30,
-        "spentMonth": 610.76,
+        "spentMonth": 819.76,
         "budgetMonth": null
       }
     }
@@ -264,27 +264,27 @@ const DATA = {
   "recentPersonal": [
     {
       "date": "2026-09-12",
-      "amount": -156.59,
-      "account": "Chase 1969",
+      "amount": -29.0,
+      "account": "Chase 8072",
       "flow": "Expense",
-      "category": "Credit Card Payment",
-      "note": "PENDING SYNCHRONY BANK SYF-PAYLTR IND ID 609768408582688"
+      "category": "Credit Card Interest",
+      "note": "Credit card interest payment from 8072 after full payment"
     },
     {
       "date": "2026-09-12",
-      "amount": -89.42,
+      "amount": 29.0,
+      "account": "Chase 8072",
+      "flow": "Income",
+      "category": "Transfer",
+      "note": "Transfer from 3222 to 8072 to cover credit card interest"
+    },
+    {
+      "date": "2026-09-12",
+      "amount": -29.0,
       "account": "Chase 3222",
       "flow": "Expense",
-      "category": "Credit Card Payment",
-      "note": "PENDING CITI AUTOPAY PAYMENT IND ID 272116742790030"
-    },
-    {
-      "date": "2026-09-12",
-      "amount": -750.56,
-      "account": "Chase 3602",
-      "flow": "Expense",
-      "category": "Mortgage",
-      "note": "PENDING DOVENMUEHLE MTG MORTG PYMT IND ID 1508473608"
+      "category": "Transfer",
+      "note": "Transfer from 3222 to 8072 to cover credit card interest"
     },
     {
       "date": "2026-09-12",
@@ -296,11 +296,11 @@ const DATA = {
     },
     {
       "date": "2026-09-12",
-      "amount": -29.0,
-      "account": "Chase 3222",
+      "amount": -750.56,
+      "account": "Chase 3602",
       "flow": "Expense",
-      "category": "Transfer",
-      "note": "Transfer from 3222 to 8072 to cover credit card interest"
+      "category": "Mortgage",
+      "note": "PENDING DOVENMUEHLE MTG MORTG PYMT IND ID 1508473608"
     }
   ],
   "recentEasy": [
@@ -314,14 +314,6 @@ const DATA = {
     },
     {
       "date": "2026-09-11",
-      "amount": -20.0,
-      "account": "Chase 3235",
-      "flow": "Expense",
-      "category": "Software/Subscriptions",
-      "note": "NOUS RESEARCH INC WWW.NOUSRESEA TX 09/11 ending 4723"
-    },
-    {
-      "date": "2026-09-11",
       "amount": -15.0,
       "account": "Chase 3235",
       "flow": "Expense",
@@ -329,20 +321,28 @@ const DATA = {
       "note": "Zelle payment to Gabriel Lopez Garcia JPM99CW4UK0S"
     },
     {
-      "date": "2026-09-10",
+      "date": "2026-09-11",
       "amount": -20.0,
       "account": "Chase 3235",
       "flow": "Expense",
       "category": "Software/Subscriptions",
-      "note": "OPENAI CHATGPT SUBSCR OPENAI.COM CA 09/10 ending 4723"
+      "note": "NOUS RESEARCH INC WWW.NOUSRESEA TX 09/11 ending 4723"
     },
     {
       "date": "2026-09-10",
-      "amount": -115.0,
+      "amount": 848.17,
       "account": "Chase 3235",
-      "flow": "Expense",
-      "category": "Cleaning",
-      "note": "Zelle payment to Stephanie Cleaner JPM99CW1BGDD"
+      "flow": "Income",
+      "category": "Airbnb Revenue",
+      "note": "AIRBNB 4977 DESC DATE SEP 09 TRACE 028000086662771"
+    },
+    {
+      "date": "2026-09-10",
+      "amount": 180.0,
+      "account": "Chase 3235",
+      "flow": "Income",
+      "category": "Transfer",
+      "note": "Online Transfer from CHK 3602 transaction 30756350951"
     }
   ]
 };
