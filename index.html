@@ -14,8 +14,8 @@
    confirm the page populates before considering it done.
    ========================================================== */
 const DATA = {
-  "updated": "Fri Sep 25, 2026 · 8:06 AM",
-  "wandaMessage": "Good morning ❤ Finance: $351.72 controllable -- $31.72 over the $320 Sunday budget. Today: Capital One files, real estate study, and Prius DMV mail. 10 tasks this week. Steady choices move us toward the house, kids, and debt-free life.",
+  "updated": "Sun Sep 27, 2026 · 8:02 AM",
+  "wandaMessage": "Good morning ❤️ Finance: $0.00 spending so far this week, $320.00 left in the $320 Sunday budget. Today: Capital One files, real estate study, and Prius DMV mail. 10 tasks this week. Small steady steps move us toward the house, kids, and debt-free life.",
   "budgetPlan": {
     "status": "Reset cards · Priscilla job starts Monday · protect cash",
     "weekStarts": "Sunday",
@@ -23,13 +23,13 @@ const DATA = {
     "overallWeeklyTarget": 320,
     "gasBudgetMode": "essential-tracked-separately",
     "combinedFoodTarget": 250,
-    "lastSynced": "2026-09-25",
-    "foodSignalOverride": "NO",
-    "foodSignalReason": "Control cap is over target. Use groceries/home food until Sunday reset.",
+    "lastSynced": "2026-09-27",
+    "foodSignalOverride": "YES",
+    "foodSignalReason": "Sunday budget reset; keep choices simple and stay inside the cap.",
     "amexTotalBalance": 2309,
     "amexPending": null,
     "amexPosted": 673.76,
-    "dataFreshnessNote": "Refreshed from Family Finances sheet on 2026-09-25 via apps-script-webapp; card payments and internal transfers excluded from spending.",
+    "dataFreshnessNote": "Refreshed from Family Finances sheet on 2026-09-27 via apps-script-webapp; card payments and internal transfers excluded from spending.",
     "accountBalances": {
       "personal3222": 4050.0,
       "azRamar1969": -68.19,
@@ -60,8 +60,8 @@ const DATA = {
   ],
   "personal": {
     "income": {
-      "week": 2658.69,
-      "month": 10416.98,
+      "week": 0,
+      "month": 12771.54,
       "items": [
         {
           "label": "Boeing (W2)",
@@ -74,14 +74,14 @@ const DATA = {
       ]
     },
     "expenses": {
-      "week": 474.05,
-      "month": 8514.4
+      "week": 0,
+      "month": 9497.45
     },
     "cashflow": {
-      "weekIn": 2658.69,
-      "weekOut": 474.05,
-      "monthIn": 10416.98,
-      "monthOut": 8514.4
+      "weekIn": 0,
+      "weekOut": 0,
+      "monthIn": 12771.54,
+      "monthOut": 9497.45
     }
   },
   "business": {
@@ -95,8 +95,8 @@ const DATA = {
     "azramar": {
       "name": "AZ Ramar",
       "month": {
-        "income": 2354.56,
-        "expenses": 983.05
+        "income": 0,
+        "expenses": 0
       }
     }
   },
@@ -104,8 +104,8 @@ const DATA = {
     "fixed": {
       "weekly": 900,
       "monthly": 3600,
-      "spentWeek": 60.0,
-      "spentMonth": 5200.22,
+      "spentWeek": 0,
+      "spentMonth": 6742.04,
       "items": [
         "Rent",
         "Electric",
@@ -117,33 +117,33 @@ const DATA = {
     },
     "variable": {
       "dining": {
-        "spentWeek": 76.5,
+        "spentWeek": 0,
         "budgetWeek": 90,
         "spentMonth": 845.94,
         "budgetMonth": null
       },
       "groceries": {
-        "spentWeek": 168.54,
+        "spentWeek": 0,
         "budgetWeek": 160,
         "spentMonth": 626.74,
         "budgetMonth": null
       },
       "shopping": {
-        "spentWeek": 58.74,
+        "spentWeek": 0,
         "budgetWeek": 40,
-        "spentMonth": 1006.8,
+        "spentMonth": 682.48,
         "budgetMonth": null
       },
       "gas": {
-        "spentWeek": 62.33,
+        "spentWeek": 0,
         "budgetWeek": null,
         "spentMonth": 496.75,
         "budgetMonth": null
       },
       "other": {
-        "spentWeek": 47.94,
+        "spentWeek": 0,
         "budgetWeek": 30,
-        "spentMonth": 337.95,
+        "spentMonth": 103.5,
         "budgetMonth": null
       }
     }
@@ -264,6 +264,22 @@ const DATA = {
   "recentPersonal": [
     {
       "date": "2026-09-23",
+      "amount": -13.41,
+      "account": "Amex 83007",
+      "flow": "Expense",
+      "category": "Dining/Takeout",
+      "note": "PENDING YOSHINOYA Priscilla M Ramos"
+    },
+    {
+      "date": "2026-09-23",
+      "amount": -21.6,
+      "account": "Amex 83007",
+      "flow": "Expense",
+      "category": "Dining/Takeout",
+      "note": "PENDING SWEETGREEN Priscilla M Ramos"
+    },
+    {
+      "date": "2026-09-23",
       "amount": -62.33,
       "account": "Amex 83007",
       "flow": "Expense",
@@ -280,27 +296,11 @@ const DATA = {
     },
     {
       "date": "2026-09-23",
-      "amount": -21.6,
-      "account": "Amex 83007",
+      "amount": -75.76,
+      "account": "Chase 1969",
       "flow": "Expense",
-      "category": "Dining/Takeout",
-      "note": "PENDING SWEETGREEN Priscilla M Ramos"
-    },
-    {
-      "date": "2026-09-23",
-      "amount": -13.41,
-      "account": "Amex 83007",
-      "flow": "Expense",
-      "category": "Dining/Takeout",
-      "note": "PENDING YOSHINOYA Priscilla M Ramos"
-    },
-    {
-      "date": "2026-09-22",
-      "amount": 2658.69,
-      "account": "Chase 3222",
-      "flow": "Income",
-      "category": "Paycheck",
-      "note": "THE BOEING COMPA PAYROLL PPD ID 1951054708"
+      "category": "Utilities",
+      "note": "PENDING OPTIMUM 7715 CABLE PMNT PPD ID 9077150002"
     }
   ],
   "recentEasy": [
